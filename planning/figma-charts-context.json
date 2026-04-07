@@ -1,0 +1,241 @@
+{
+  "source": "Figma - Doctor App Design",
+  "file_url": "https://www.figma.com/design/6dOr0j8a359z8P0QYAAyMC/doctortApp?node-id=54-752",
+  "node_id": "54:752",
+  "frame_name": "Frame 7",
+  "extracted_at": "2026-04-06",
+  "charts": {
+    "radialChart": {
+      "node_id": "56:816",
+      "name": "radialChart",
+      "dimensions": { "x": 85, "y": 51, "width": 665, "height": 769 },
+      "props": {
+        "horizontal": ["on", "off"]
+      },
+      "variations": [
+        {
+          "id": "54:820",
+          "config": "horizontal=off",
+          "dimensions": { "width": 284, "height": 336 },
+          "layout": "vertical card with circular progress chart centered at top, value text and label below"
+        },
+        {
+          "id": "56:817",
+          "config": "horizontal=on",
+          "dimensions": { "width": 324.864, "height": 126.57 },
+          "layout": "horizontal card with circular progress chart on left, progress bars list on right"
+        }
+      ],
+      "style_details": {
+        "card": {
+          "background": "#FFFFFF",
+          "border_radius": "24px",
+          "shadow": "0px 5px 10px rgba(13,13,18,0.04), 0px 4px 8px rgba(13,13,18,0.02)"
+        },
+        "vertical_layout": {
+          "chart": {
+            "position": "centered at top",
+            "chart_size": "148px diameter",
+            "percentage_text": {
+              "font": "Poppins SemiBold",
+              "size": "28px",
+              "line_height": "1.41",
+              "letter_spacing": "0.14px",
+              "color": "#000508",
+              "position": "centered inside circle"
+            },
+            "decorative_dots": {
+              "count": 3,
+              "size": "20px each",
+              "colors": ["#E7F8F8", "#E7F8F8", "#E7F8F8"]
+            }
+          },
+          "value_text": {
+            "font": "SF Pro Text Medium",
+            "size": "18px",
+            "line_height": "1.55",
+            "color": "#000508",
+            "position": "left-aligned below chart (left: 26px, top: 242px)"
+          },
+          "label_text": {
+            "font": "SF Pro Text Regular",
+            "size": "16px",
+            "line_height": "1.6",
+            "color": "#555C61",
+            "position": "left-aligned below value text (left: 26px, top: 280px)"
+          }
+        },
+        "horizontal_layout": {
+          "container": {
+            "padding": "20px",
+            "gap": "16px"
+          },
+          "chart_section": {
+            "chart_size": "76.723px diameter",
+            "percentage_text": {
+              "font": "Poppins SemiBold",
+              "size": "14.515px",
+              "line_height": "1.41",
+              "letter_spacing": "0.0726px",
+              "color": "#000508",
+              "position": "centered inside circle"
+            },
+            "decorative_dots": {
+              "count": 2,
+              "size": "10.368px each",
+              "colors": ["#E7F8F8", "#E7F8F8"]
+            }
+          },
+          "progress_bars_section": {
+            "gap_between_bars": "16px",
+            "bar_item": {
+              "label_row": {
+                "gap": "10px",
+                "label_font": "SF Pro Text Regular",
+                "label_size": "14px",
+                "label_line_height": "1.55",
+                "label_color": "#555C61",
+                "count_font": "SF Pro Text Regular",
+                "count_size": "14px",
+                "count_color": "#555C61",
+                "count_width": "40px",
+                "count_alignment": "right"
+              },
+              "track": {
+                "height": "5px",
+                "background": "#E6ECF4",
+                "border_radius": "99px"
+              },
+              "fill": {
+                "height": "5px",
+                "border_radius": "99px",
+                "colors": ["#00438F", "#83A7D2"]
+              }
+            },
+            "example_data": [
+              { "label": "Examinations", "count": "3/12", "fill_color": "#00438F" },
+              { "label": "Consultations", "count": "2/8", "fill_color": "#83A7D2" }
+            ]
+          }
+        }
+      },
+      "design_tokens": {
+        "white": "#FFFFFF",
+        "black/black-900": "#000508",
+        "black/black-300": "#555C61",
+        "Primary/primary-500": "#00438F",
+        "Secondary/secondary-500": "#83A7D2",
+        "Accent/accent-50": "#E7F8F8",
+        "Primary/primary-50": "#E6ECF4",
+        "shadowM": "0px 5px 10px rgba(13,13,18,0.04), 0px 4px 8px rgba(13,13,18,0.02)"
+      }
+    },
+    "barChart": {
+      "node_id": "59:1159",
+      "name": "barChart",
+      "dimensions": { "x": 974, "y": 801, "width": 330, "height": 230 },
+      "props": {
+        "darkLabel": "string (default: Examination)",
+        "lightLabel": "string (default: Consultation)"
+      },
+      "style_details": {
+        "container": {
+          "width": "330px",
+          "layout": "flex flex-col",
+          "gap": "15px"
+        },
+        "chart_area": {
+          "height": "196px",
+          "layout": "flex row with y-axis labels and chart body"
+        },
+        "y_axis": {
+          "width": "30px",
+          "labels": ["30", "25", "20", "15", "10", "5"],
+          "font": "SF Pro Text Regular",
+          "size": "12px",
+          "color": "#000000",
+          "alignment": "center"
+        },
+        "chart_body": {
+          "layout": "flex flex-col with grid background and bars overlay",
+          "gap_between_bars": "15px",
+          "padding_horizontal": "10px",
+          "bars_per_day": {
+            "layout": "stacked bars using inline-grid",
+            "total_height": "166px",
+            "border_radius_top": "5px",
+            "bar_layers": [
+              {
+                "layer": "background placeholder",
+                "color": "#E6E7E7",
+                "opacity": "0.20",
+                "height": "166px (full)"
+              },
+              {
+                "layer": "light bar (Consultation)",
+                "color": "#83A7D2",
+                "border_radius_top": "5px"
+              },
+              {
+                "layer": "dark bar (Examination)",
+                "color": "#00438F",
+                "border_radius": "none (sits on top)"
+              }
+            ],
+            "example_data": {
+              "Mon": { "consultation_height": "89.456px", "examination_height": "56.717px", "examination_margin_top": "109.28px" },
+              "Tue": { "consultation_height": "110.666px", "examination_height": "70.089px", "examination_margin_top": "95.91px" },
+              "Wed": { "special": "highlighted day with different visual treatment" },
+              "Thu": { "consultation_height": "96.372px", "examination_height": "61.328px", "examination_margin_top": "104.67px" },
+              "Fri": { "consultation_height": "121.733px", "examination_height": "77.006px", "examination_margin_top": "88.99px" },
+              "Sat": { "consultation_height": "48.417px", "examination_height": "30.894px", "examination_margin_top": "135.11px" },
+              "Sun": { "consultation_height": "89.456px", "examination_height": "56.717px", "examination_margin_top": "109.28px" }
+            }
+          }
+        },
+        "x_axis_labels": {
+          "height": "30px",
+          "padding_horizontal": "10px",
+          "gap": "15px",
+          "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          "font": "SF Pro Text Regular",
+          "size": "12px",
+          "line_height": "1.55",
+          "color": "#001C3C",
+          "alignment": "center"
+        },
+        "legend": {
+          "gap": "25px",
+          "item": {
+            "gap": "10px",
+            "dot": {
+              "size": "12px",
+              "border_radius": "999px"
+            },
+            "label": {
+              "font": "SF Pro Text Regular",
+              "size": "12px",
+              "line_height": "1.55",
+              "color": "#000000"
+            }
+          },
+          "items": [
+            { "color": "#00438F", "label": "Examination" },
+            { "color": "#83A7D2", "label": "Consultation" }
+          ]
+        }
+      },
+      "design_tokens": {
+        "black/black-50": "#E6E7E7",
+        "Secondary/secondary-500": "#83A7D2",
+        "Primary/primary-500": "#00438F",
+        "Primary/primary-900": "#001C3C",
+        "body/bodyRegular12": "Font(family: SF Pro Text, style: Regular, size: 12, weight: 400, lineHeight: 1.55, letterSpacing: 0)"
+      }
+    }
+  },
+  "total_chart_variations": {
+    "radial_chart": 2,
+    "bar_chart": 1
+  }
+}

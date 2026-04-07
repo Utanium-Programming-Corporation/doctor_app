@@ -1,0 +1,186 @@
+{
+  "source": "Figma - Doctor App Design",
+  "file_url": "https://www.figma.com/design/6dOr0j8a359z8P0QYAAyMC/doctortApp?node-id=47-51970",
+  "node_id": "47:51970",
+  "frame_name": "textFields",
+  "extracted_at": "2026-04-06",
+  "textField": {
+    "node_id": "47:53118",
+    "name": "textField",
+    "dimensions": { "x": 58, "y": 269, "width": 1235, "height": 1018 },
+    "props": {
+      "state": ["enabled", "focused", "error", "disabled"],
+      "leadingIcon": ["on", "off"],
+      "traillingIcon": ["on", "off"],
+      "showHelperText": ["on", "off"]
+    },
+    "variations": [
+      {
+        "state": "enabled",
+        "showHelperText": "on",
+        "variations": [
+          { "id": "47:52986", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53119", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 88 },
+          { "id": "47:53136", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53153", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 88 }
+        ]
+      },
+      {
+        "state": "enabled",
+        "showHelperText": "off",
+        "variations": [
+          { "id": "47:53827", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:53848", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 61 },
+          { "id": "47:53838", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:53858", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 61 }
+        ]
+      },
+      {
+        "state": "focused",
+        "showHelperText": "on",
+        "variations": [
+          { "id": "47:53251", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53274", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 88 },
+          { "id": "47:53308", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53361", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 88 }
+        ]
+      },
+      {
+        "state": "focused",
+        "showHelperText": "off",
+        "variations": [
+          { "id": "47:53879", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:53890", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 61 },
+          { "id": "47:53900", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:53910", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 61 }
+        ]
+      },
+      {
+        "state": "error",
+        "showHelperText": "on",
+        "variations": [
+          { "id": "47:53374", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53385", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 88 },
+          { "id": "47:53395", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53405", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 88 }
+        ]
+      },
+      {
+        "state": "error",
+        "showHelperText": "off",
+        "variations": [
+          { "id": "47:53931", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:53952", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 61 },
+          { "id": "47:53942", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:53962", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 61 }
+        ]
+      },
+      {
+        "state": "disabled",
+        "showHelperText": "on",
+        "variations": [
+          { "id": "47:53426", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53437", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 88 },
+          { "id": "47:53447", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 88 },
+          { "id": "47:53457", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 88 }
+        ]
+      },
+      {
+        "state": "disabled",
+        "showHelperText": "off",
+        "variations": [
+          { "id": "47:53983", "config": "leadingIcon=on, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:53994", "config": "leadingIcon=on, traillingIcon=off", "width": 250, "height": 61 },
+          { "id": "47:54004", "config": "leadingIcon=off, traillingIcon=on", "width": 250, "height": 61 },
+          { "id": "47:54014", "config": "leadingIcon=off, traillingIcon=off", "width": 250, "height": 61 }
+        ]
+      }
+    ],
+    "style_details": {
+      "container": {
+        "width": "250px (sample)",
+        "layout": "flex flex-col",
+        "border_radius_top": "8px",
+        "border_radius_bottom": "0px (bottom line is separate)"
+      },
+      "input_area": {
+        "padding_horizontal": "12px",
+        "padding_vertical": "8px",
+        "gap_with_icons": "16px",
+        "background": "transparent (rgba(217,217,217,0))",
+        "error_background": "#FCEBEC"
+      },
+      "bottom_line": {
+        "enabled": { "thickness": "1px", "color": "#8A8F92" },
+        "focused": { "thickness": "2px", "color": "#00438F" },
+        "error": { "thickness": "2px", "color": "#DC3545" },
+        "disabled": { "thickness": "1px", "color": "#8A8F92" }
+      },
+      "label": {
+        "font_family": "SF Pro Text",
+        "font_weight": "Regular",
+        "font_size": "12px",
+        "line_height": "1.55",
+        "letter_spacing": "0",
+        "colors": {
+          "enabled": "#000508",
+          "focused": "#00438F",
+          "error": "#DC3545",
+          "disabled": "#8A8F92"
+        }
+      },
+      "input_text": {
+        "font_family": "SF Pro Text",
+        "font_weight": "Regular",
+        "font_size": "16px",
+        "line_height": "1.6",
+        "letter_spacing": "0",
+        "colors": {
+          "enabled": "#000508",
+          "focused": "#001C3C",
+          "error": "#DC3545",
+          "disabled": "#8A8F92"
+        }
+      },
+      "helper_text": {
+        "font_family": "SF Pro Text",
+        "font_weight": "Regular",
+        "font_size": "12px",
+        "line_height": "1.55",
+        "letter_spacing": "0",
+        "padding_horizontal": "16px",
+        "padding_vertical": "4px",
+        "colors": {
+          "enabled": "#555C61",
+          "focused": "#00438F",
+          "error": "#DC3545",
+          "disabled": "#8A8F92"
+        },
+        "character_count": {
+          "example": "5/20",
+          "alignment": "right"
+        }
+      },
+      "icons": {
+        "size": "24px",
+        "gap_from_text": "16px",
+        "position": "leading and/or trailing"
+      },
+      "height_by_helper_text": {
+        "with_helper_text": "88px",
+        "without_helper_text": "61px"
+      }
+    },
+    "design_tokens": {
+      "black/black-200": "#8A8F92",
+      "black/black-300": "#555C61",
+      "black/black-900": "#000508",
+      "Primary/primary-500": "#00438F",
+      "Primary/primary-900": "#001C3C",
+      "Danger/D50": "#FCEBEC",
+      "Danger/D300": "#DC3545",
+      "transparent": "rgba(217,217,217,0)"
+    },
+    "total_variations": 32
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "source": "Figma - Doctor App Design",
+  "file_url": "https://www.figma.com/design/6dOr0j8a359z8P0QYAAyMC/doctortApp?node-id=55-2108",
+  "node_id": "55:2108",
+  "frame_name": "Badge",
+  "extracted_at": "2026-04-06",
+  "badge": {
+    "props": {
+      "styles": ["Fill", "Outlined"],
+      "size": ["Large", "Medium", "Small"],
+      "type": ["Default", "Dot", "Icon Trailing"],
+      "colors": ["Neutral", "Primary", "Green", "Yellow", "Red"]
+    },
+    "dimensions_by_size": {
+      "Large": {
+        "height": 27,
+        "padding_horizontal": 12,
+        "padding_vertical": 4,
+        "gap": 6,
+        "icon_size": 14,
+        "dot_size": 6
+      },
+      "Medium": {
+        "height": 24,
+        "padding_horizontal": 10,
+        "padding_vertical": 2,
+        "gap": 4,
+        "icon_size": 14,
+        "dot_size": 6
+      },
+      "Small": {
+        "height": 20,
+        "padding_horizontal": 8,
+        "padding_vertical": 2,
+        "gap": 4,
+        "icon_size": 12,
+        "dot_size": 6
+      }
+    },
+    "color_schemes": {
+      "Neutral": {
+        "Fill": {
+          "background": "#E6E7E7",
+          "text_color": "#001C3C",
+          "dot_color": "#001C3C"
+        },
+        "Outlined": {
+          "background": "#FFFFFF",
+          "border_color": "#0D0D12",
+          "text_color": "#0D0D12",
+          "dot_color": "#0D0D12"
+        }
+      },
+      "Primary": {
+        "Fill": {
+          "background": "#E8F6F8",
+          "text_color": "#0E6370",
+          "dot_color": "#0E6370"
+        },
+        "Outlined": {
+          "background": "#FFFFFF",
+          "border_color": "#0E6370",
+          "text_color": "#0E6370",
+          "dot_color": "#0E6370"
+        }
+      },
+      "Green": {
+        "Fill": {
+          "background": "#EAF6EC",
+          "text_color": "#18662A",
+          "dot_color": "#18662A"
+        },
+        "Outlined": {
+          "background": "#FFFFFF",
+          "border_color": "#18662A",
+          "text_color": "#1C7530",
+          "dot_color": "#18662A"
+        }
+      },
+      "Yellow": {
+        "Fill": {
+          "background": "#FFF9E6",
+          "text_color": "#9C7604",
+          "dot_color": "#9C7604"
+        },
+        "Outlined": {
+          "background": "#FFFFFF",
+          "border_color": "#9C7604",
+          "text_color": "#9C7604",
+          "dot_color": "#9C7604"
+        }
+      },
+      "Red": {
+        "Fill": {
+          "background": "#FCEBEC",
+          "text_color": "#86202A",
+          "dot_color": "#86202A"
+        },
+        "Outlined": {
+          "background": "#FFFFFF",
+          "border_color": "#86202A",
+          "text_color": "#86202A",
+          "dot_color": "#86202A"
+        }
+      }
+    },
+    "type_layouts": {
+      "Default": {
+        "content": "text label only",
+        "padding_override": {
+          "Large": { "padding_left": 12, "padding_right": 12 },
+          "Medium": { "padding_left": 10, "padding_right": 10 },
+          "Small": { "padding_left": 8, "padding_right": 8 }
+        }
+      },
+      "Dot": {
+        "content": "dot indicator + text label",
+        "dot_size": 6,
+        "padding_override": {
+          "Large": { "padding_left": 10, "padding_right": 12 },
+          "Medium": { "padding_left": 8, "padding_right": 10 },
+          "Small": { "padding_left": 6, "padding_right": 8 }
+        }
+      },
+      "Icon Trailing": {
+        "content": "text label + close (x) icon",
+        "padding_override": {
+          "Large": { "padding_left": 12, "padding_right": 8 },
+          "Medium": { "padding_left": 10, "padding_right": 6 },
+          "Small": { "padding_left": 8, "padding_right": 6 }
+        }
+      }
+    },
+    "typography": {
+      "font_family": "SF Pro Text",
+      "font_weight": "Regular",
+      "font_size": "12px",
+      "line_height": "1.55",
+      "letter_spacing": "0",
+      "text_alignment": "center"
+    },
+    "common_styles": {
+      "border_radius": "16px (pill shape)",
+      "border_width": "1px (Outlined only)",
+      "border_style": "solid"
+    },
+    "variations": [
+      {
+        "style": "Fill",
+        "type": "Default",
+        "colors": [
+          { "color": "Neutral", "sizes": [
+            { "size": "Large", "id": "55:2109", "width": 55 },
+            { "size": "Medium", "id": "55:2111", "width": 51 },
+            { "size": "Small", "id": "55:2113", "width": 47 }
+          ]},
+          { "color": "Primary", "sizes": [
+            { "size": "Large", "id": "55:2115", "width": 55 },
+            { "size": "Medium", "id": "55:2117", "width": 51 },
+            { "size": "Small", "id": "55:2119", "width": 47 }
+          ]},
+          { "color": "Green", "sizes": [
+            { "size": "Large", "id": "55:2121", "width": 55 },
+            { "size": "Medium", "id": "55:2123", "width": 51 },
+            { "size": "Small", "id": "55:2125", "width": 47 }
+          ]},
+          { "color": "Yellow", "sizes": [
+            { "size": "Large", "id": "55:2127", "width": 55 },
+            { "size": "Medium", "id": "55:2129", "width": 51 },
+            { "size": "Small", "id": "55:2131", "width": 47 }
+          ]},
+          { "color": "Red", "sizes": [
+            { "size": "Large", "id": "55:2133", "width": 55 },
+            { "size": "Medium", "id": "55:2135", "width": 51 },
+            { "size": "Small", "id": "55:2137", "width": 47 }
+          ]}
+        ]
+      },
+      {
+        "style": "Outlined",
+        "type": "Default",
+        "colors": [
+          { "color": "Neutral", "sizes": [
+            { "size": "Large", "id": "55:2139", "width": 55 },
+            { "size": "Medium", "id": "55:2141", "width": 51 },
+            { "size": "Small", "id": "55:2143", "width": 47 }
+          ]},
+          { "color": "Primary", "sizes": [
+            { "size": "Large", "id": "55:2145", "width": 55 },
+            { "size": "Medium", "id": "55:2147", "width": 51 },
+            { "size": "Small", "id": "55:2149", "width": 47 }
+          ]},
+          { "color": "Green", "sizes": [
+            { "size": "Large", "id": "55:2151", "width": 55 },
+            { "size": "Medium", "id": "55:2153", "width": 51 },
+            { "size": "Small", "id": "55:2155", "width": 47 }
+          ]},
+          { "color": "Yellow", "sizes": [
+            { "size": "Large", "id": "55:2157", "width": 55 },
+            { "size": "Medium", "id": "55:2159", "width": 51 },
+            { "size": "Small", "id": "55:2161", "width": 47 }
+          ]},
+          { "color": "Red", "sizes": [
+            { "size": "Large", "id": "55:2163", "width": 55 },
+            { "size": "Medium", "id": "55:2165", "width": 51 },
+            { "size": "Small", "id": "55:2167", "width": 47 }
+          ]}
+        ]
+      },
+      {
+        "style": "Fill",
+        "type": "Dot",
+        "colors": [
+          { "color": "Neutral", "sizes": [
+            { "size": "Large", "id": "55:2169", "width": 65 },
+            { "size": "Medium", "id": "55:2172", "width": 59 },
+            { "size": "Small", "id": "55:2175", "width": 55 }
+          ]},
+          { "color": "Primary", "sizes": [
+            { "size": "Large", "id": "55:2178", "width": 65 },
+            { "size": "Medium", "id": "55:2181", "width": 59 },
+            { "size": "Small", "id": "55:2184", "width": 55 }
+          ]},
+          { "color": "Green", "sizes": [
+            { "size": "Large", "id": "55:2187", "width": 65 },
+            { "size": "Medium", "id": "55:2190", "width": 59 },
+            { "size": "Small", "id": "55:2193", "width": 55 }
+          ]},
+          { "color": "Yellow", "sizes": [
+            { "size": "Large", "id": "55:2196", "width": 65 },
+            { "size": "Medium", "id": "55:2199", "width": 59 },
+            { "size": "Small", "id": "55:2202", "width": 55 }
+          ]},
+          { "color": "Red", "sizes": [
+            { "size": "Large", "id": "55:2205", "width": 65 },
+            { "size": "Medium", "id": "55:2208", "width": 59 },
+            { "size": "Small", "id": "55:2211", "width": 55 }
+          ]}
+        ]
+      },
+      {
+        "style": "Outlined",
+        "type": "Dot",
+        "colors": [
+          { "color": "Neutral", "sizes": [
+            { "size": "Large", "id": "55:2214", "width": 65 },
+            { "size": "Medium", "id": "55:2217", "width": 59 },
+            { "size": "Small", "id": "55:2220", "width": 55 }
+          ]},
+          { "color": "Primary", "sizes": [
+            { "size": "Large", "id": "55:2223", "width": 65 },
+            { "size": "Medium", "id": "55:2226", "width": 59 },
+            { "size": "Small", "id": "55:2229", "width": 55 }
+          ]},
+          { "color": "Green", "sizes": [
+            { "size": "Large", "id": "55:2232", "width": 65 },
+            { "size": "Medium", "id": "55:2235", "width": 59 },
+            { "size": "Small", "id": "55:2238", "width": 55 }
+          ]},
+          { "color": "Yellow", "sizes": [
+            { "size": "Large", "id": "55:2241", "width": 65 },
+            { "size": "Medium", "id": "55:2244", "width": 59 },
+            { "size": "Small", "id": "55:2247", "width": 55 }
+          ]},
+          { "color": "Red", "sizes": [
+            { "size": "Large", "id": "55:2250", "width": 65 },
+            { "size": "Medium", "id": "55:2253", "width": 59 },
+            { "size": "Small", "id": "55:2256", "width": 55 }
+          ]}
+        ]
+      },
+      {
+        "style": "Fill",
+        "type": "Icon Trailing",
+        "colors": [
+          { "color": "Neutral", "sizes": [
+            { "size": "Large", "id": "55:2259", "width": 69 },
+            { "size": "Medium", "id": "55:2263", "width": 65 },
+            { "size": "Small", "id": "55:2267", "width": 61 }
+          ]},
+          { "color": "Primary", "sizes": [
+            { "size": "Large", "id": "55:2271", "width": 69 },
+            { "size": "Medium", "id": "55:2275", "width": 65 },
+            { "size": "Small", "id": "55:2279", "width": 61 }
+          ]},
+          { "color": "Green", "sizes": [
+            { "size": "Large", "id": "55:2283", "width": 69 },
+            { "size": "Medium", "id": "55:2287", "width": 65 },
+            { "size": "Small", "id": "55:2291", "width": 61 }
+          ]},
+          { "color": "Yellow", "sizes": [
+            { "size": "Large", "id": "55:2295", "width": 69 },
+            { "size": "Medium", "id": "55:2299", "width": 65 },
+            { "size": "Small", "id": "55:2303", "width": 61 }
+          ]},
+          { "color": "Red", "sizes": [
+            { "size": "Large", "id": "55:2307", "width": 69 },
+            { "size": "Medium", "id": "55:2311", "width": 65 },
+            { "size": "Small", "id": "55:2315", "width": 61 }
+          ]}
+        ]
+      },
+      {
+        "style": "Outlined",
+        "type": "Icon Trailing",
+        "colors": [
+          { "color": "Neutral", "sizes": [
+            { "size": "Large", "id": "55:2319", "width": 69 },
+            { "size": "Medium", "id": "55:2323", "width": 67 },
+            { "size": "Small", "id": "55:2326", "width": 61 }
+          ]},
+          { "color": "Primary", "sizes": [
+            { "size": "Large", "id": "55:2330", "width": 69 },
+            { "size": "Medium", "id": "55:2334", "width": 65 },
+            { "size": "Small", "id": "55:2338", "width": 61 }
+          ]},
+          { "color": "Green", "sizes": [
+            { "size": "Large", "id": "55:2342", "width": 69 },
+            { "size": "Medium", "id": "55:2346", "width": 65 },
+            { "size": "Small", "id": "55:2350", "width": 61 }
+          ]},
+          { "color": "Yellow", "sizes": [
+            { "size": "Large", "id": "55:2354", "width": 69 },
+            { "size": "Medium", "id": "55:2358", "width": 65 },
+            { "size": "Small", "id": "55:2362", "width": 61 }
+          ]},
+          { "color": "Red", "sizes": [
+            { "size": "Large", "id": "55:2366", "width": 69 },
+            { "size": "Medium", "id": "55:2370", "width": 65 },
+            { "size": "Small", "id": "55:2374", "width": 61 }
+          ]}
+        ]
+      }
+    ],
+    "total_variations": 90
+  }
+}

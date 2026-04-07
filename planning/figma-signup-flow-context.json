@@ -1,0 +1,722 @@
+{
+  "source": "Figma - Doctor App Design",
+  "file_url": "https://www.figma.com/design/6dOr0j8a359z8P0QYAAyMC/doctortApp",
+  "node_id": "51:560",
+  "frame_name": "Login/Reset Password",
+  "extracted_at": "2026-04-06",
+  "signup_flow": {
+    "screens": [
+      {
+        "id": "50:793",
+        "name": "Login",
+        "dimensions": { "width": 393, "height": 852 },
+        "background": "#F6F9FD",
+        "border_radius": "30px",
+        "elements": [
+          {
+            "type": "status_bar",
+            "component": "IphoneStatusBar",
+            "position": { "x": 0, "y": 0, "width": 393, "height": 48 }
+          },
+          {
+            "type": "heading",
+            "text": "Welcome Back!",
+            "position": { "x": 24, "y": 80, "width": 345, "height": 32 },
+            "style": {
+              "font": "SF Pro Display Bold",
+              "size": "24px",
+              "line_height": "1.33",
+              "color": "#000000"
+            }
+          },
+          {
+            "type": "subtitle",
+            "text": "Sign In to your account",
+            "position": { "x": 24, "y": 120, "width": 345, "height": 26 },
+            "style": {
+              "font": "SF Pro Text Regular",
+              "size": "16px",
+              "line_height": "1.6",
+              "color": "#555C61"
+            }
+          },
+          {
+            "type": "social_login",
+            "component": "socialLogin",
+            "position": { "x": 15, "y": 166, "width": 363, "height": 126 },
+            "padding": "10px",
+            "gap": "10px",
+            "buttons": [
+              {
+                "type": "Google",
+                "theme": "Brand",
+                "width": 343,
+                "height": 48,
+                "style": {
+                  "background": "#FFFFFF",
+                  "border": "1px solid #E6E7E7",
+                  "border_radius": "99px",
+                  "shadow": "0px 1px 2px rgba(13,13,18,0.06)",
+                  "padding": "12px 16px",
+                  "gap": "12px"
+                },
+                "text": "Sign in with Google",
+                "text_style": {
+                  "font": "SF Pro Text Medium",
+                  "size": "16px",
+                  "line_height": "1.6",
+                  "color": "#0D0D12"
+                }
+              },
+              {
+                "type": "Apple",
+                "theme": "Neutral",
+                "width": 343,
+                "height": 48,
+                "style": {
+                  "background": "#FFFFFF",
+                  "border": "1px solid #E6E7E7",
+                  "border_radius": "99px",
+                  "shadow": "0px 1px 2px rgba(13,13,18,0.06)",
+                  "padding": "12px 16px",
+                  "gap": "12px"
+                },
+                "text": "Sign in with Apple",
+                "text_style": {
+                  "font": "SF Pro Text Medium",
+                  "size": "16px",
+                  "line_height": "1.6",
+                  "color": "#0D0D12"
+                }
+              }
+            ]
+          },
+          {
+            "type": "divider",
+            "component": "OR",
+            "position": { "x": 24, "y": 304, "width": 345, "height": 24 },
+            "text": "OR",
+            "text_style": {
+              "font": "SF Pro Display Bold",
+              "size": "16px",
+              "line_height": "20px",
+              "color": "#555C61"
+            },
+            "lines": {
+              "color": "#E9ECF2",
+              "thickness": "1px",
+              "width": "150.41px each"
+            }
+          },
+          {
+            "type": "form",
+            "component": "signupForm",
+            "position": { "x": 24, "y": 334, "width": 345, "height": 418 },
+            "gap": "32px",
+            "fields": [
+              {
+                "type": "emailField",
+                "width": 345,
+                "height": 61,
+                "icon": "gmail",
+                "icon_size": "24px",
+                "label": "Email",
+                "placeholder": "test@test.com",
+                "style": {
+                  "background": "transparent",
+                  "padding": "8px 12px",
+                  "gap": "16px",
+                  "border_radius_top": "8px",
+                  "bottom_line_thickness": "1px"
+                }
+              },
+              {
+                "type": "password",
+                "width": 345,
+                "height": 61,
+                "icon": "security",
+                "icon_size": "24px",
+                "label": "Password",
+                "placeholder": "********",
+                "trailing_icon": "eye",
+                "style": {
+                  "background": "transparent",
+                  "padding": "8px 12px",
+                  "gap": "16px",
+                  "border_radius_top": "8px",
+                  "bottom_line_thickness": "1px"
+                }
+              },
+              {
+                "type": "link",
+                "text": "Forgot Password",
+                "position": "right-aligned below password field",
+                "style": {
+                  "font": "SF Pro Text Regular",
+                  "size": "14px",
+                  "line_height": "1.55",
+                  "color": "#555C61",
+                  "decoration": "underline"
+                }
+              }
+            ],
+            "button": {
+              "type": "primaryButton",
+              "text": "Login",
+              "width": 345,
+              "height": 50,
+              "style": {
+                "background": "#00438F",
+                "border_radius": "999px",
+                "padding": "12px",
+                "text_style": {
+                  "font": "SF Pro Text Medium",
+                  "size": "16px",
+                  "line_height": "1.6",
+                  "color": "#FFFFFF"
+                }
+              }
+            }
+          },
+          {
+            "type": "footer_link",
+            "text": "Already have an account? Sign up",
+            "position": { "x": 24, "y": 768, "width": 345, "height": 22 },
+            "style": {
+              "font": "SF Pro Text Regular",
+              "size": "14px",
+              "line_height": "1.55",
+              "color": "#555C61"
+            },
+            "link": {
+              "text": "Sign up",
+              "style": {
+                "font": "SF Pro Text Bold",
+                "color": "#09ACAC",
+                "decoration": "underline"
+              }
+            }
+          },
+          {
+            "type": "home_indicator",
+            "component": "Home Indicator",
+            "position": { "x": 0, "y": 800, "width": 393, "height": 52 }
+          }
+        ]
+      },
+      {
+        "id": "51:300",
+        "name": "Reset Password 1 - Email",
+        "dimensions": { "width": 393, "height": 852 },
+        "background": "#F6F9FD",
+        "border_radius": "30px",
+        "elements": [
+          {
+            "type": "status_bar",
+            "component": "IphoneStatusBar",
+            "position": { "x": 0, "y": 0, "width": 393, "height": 48 }
+          },
+          {
+            "type": "back_button",
+            "component": "arrow_back",
+            "position": { "x": 24, "y": 56, "width": 24, "height": 24 }
+          },
+          {
+            "type": "heading",
+            "text": "Reset Password",
+            "position": { "x": 24, "y": 94, "width": 345, "height": 32 },
+            "style": {
+              "font": "SF Pro Display Bold",
+              "size": "24px",
+              "line_height": "1.33",
+              "color": "#000000"
+            }
+          },
+          {
+            "type": "description",
+            "text": "Enter your email, we will send verification code to your email.",
+            "position": { "x": 24, "y": 140, "width": 345, "height": 52 },
+            "style": {
+              "font": "SF Pro Text Regular",
+              "size": "16px",
+              "line_height": "1.6",
+              "color": "#555C61"
+            }
+          },
+          {
+            "type": "form",
+            "component": "signupForm",
+            "position": { "x": 24, "y": 206, "width": 345, "height": 143 },
+            "gap": "32px",
+            "fields": [
+              {
+                "type": "emailField",
+                "width": 345,
+                "height": 61,
+                "icon": "gmail",
+                "icon_size": "24px",
+                "label": "Email",
+                "placeholder": "test@test.com",
+                "style": {
+                  "background": "transparent",
+                  "padding": "8px 12px",
+                  "gap": "16px",
+                  "border_radius_top": "8px",
+                  "bottom_line_thickness": "1px"
+                }
+              }
+            ],
+            "button": {
+              "type": "primaryButton",
+              "text": "Send Code",
+              "width": 345,
+              "height": 50,
+              "style": {
+                "background": "#00438F",
+                "border_radius": "999px",
+                "padding": "12px",
+                "text_style": {
+                  "font": "SF Pro Text Medium",
+                  "size": "16px",
+                  "line_height": "1.6",
+                  "color": "#FFFFFF"
+                }
+              }
+            }
+          },
+          {
+            "type": "home_indicator",
+            "component": "Home Indicator",
+            "position": { "x": 0, "y": 800, "width": 393, "height": 52 }
+          }
+        ]
+      },
+      {
+        "id": "51:381",
+        "name": "Reset Password 2 - Verify Email",
+        "dimensions": { "width": 393, "height": 852 },
+        "background": "#F6F9FD",
+        "border_radius": "30px",
+        "elements": [
+          {
+            "type": "status_bar",
+            "component": "IphoneStatusBar",
+            "position": { "x": 0, "y": 0, "width": 393, "height": 48 }
+          },
+          {
+            "type": "back_button",
+            "component": "arrow_back",
+            "position": { "x": 24, "y": 56, "width": 24, "height": 24 }
+          },
+          {
+            "type": "heading",
+            "text": "Verify Email",
+            "position": { "x": 24, "y": 94, "width": 345, "height": 32 },
+            "style": {
+              "font": "SF Pro Display Bold",
+              "size": "24px",
+              "line_height": "1.33",
+              "color": "#000000"
+            }
+          },
+          {
+            "type": "description",
+            "text": "Please enter the code we sent to test@test.com",
+            "position": { "x": 24, "y": 140, "width": 345, "height": 51 },
+            "style": {
+              "font": "SF Pro Text Regular",
+              "size": "16px",
+              "line_height": "1.6",
+              "color": "#555C61"
+            },
+            "highlight": {
+              "text": "test@test.com",
+              "style": {
+                "font": "SF Pro Text Bold",
+                "size": "16px",
+                "line_height": "1.55",
+                "color": "#000000"
+              }
+            }
+          },
+          {
+            "type": "form",
+            "component": "verifyPhoneForm",
+            "position": { "x": 24, "y": 205, "width": 345, "height": 138 },
+            "gap": "32px",
+            "fields": [
+              {
+                "type": "otp_code",
+                "component": "code",
+                "width": 344,
+                "height": 56,
+                "digits": 5,
+                "digit_box": {
+                  "size": "56x56",
+                  "shape": "ellipse",
+                  "filled_style": {
+                    "background": "#0ABDBD",
+                    "text_color": "#242B42",
+                    "text_style": {
+                      "font": "Urbanist Bold",
+                      "size": "20px",
+                      "line_height": "28px"
+                    }
+                  },
+                  "empty_style": {
+                    "background": "#12121D (5% opacity)",
+                    "border": "none"
+                  }
+                },
+                "gap_between_digits": "16px"
+              }
+            ],
+            "button": {
+              "type": "primaryButton",
+              "text": "Continue",
+              "width": 345,
+              "height": 50,
+              "style": {
+                "background": "#00438F",
+                "border_radius": "999px",
+                "padding": "12px",
+                "text_style": {
+                  "font": "SF Pro Text Medium",
+                  "size": "16px",
+                  "line_height": "1.6",
+                  "color": "#FFFFFF"
+                }
+              }
+            }
+          },
+          {
+            "type": "resend_code",
+            "text": "Resend Code 00:45",
+            "position": { "x": 24, "y": 357, "width": 345, "height": 22 },
+            "style": {
+              "font": "SF Pro Text Regular",
+              "size": "14px",
+              "line_height": "1.55",
+              "color": "#555C61"
+            },
+            "timer": {
+              "text": "00:45",
+              "style": {
+                "font": "SF Pro Text Bold",
+                "size": "14px",
+                "line_height": "1.55",
+                "color": "#343D42"
+              }
+            }
+          },
+          {
+            "type": "home_indicator",
+            "component": "Home Indicator",
+            "position": { "x": 0, "y": 804, "width": 393, "height": 48 }
+          }
+        ]
+      },
+      {
+        "id": "51:459",
+        "name": "Reset Password 3 - New Password",
+        "dimensions": { "width": 393, "height": 852 },
+        "background": "#F6F9FD",
+        "border_radius": "30px",
+        "elements": [
+          {
+            "type": "status_bar",
+            "component": "IphoneStatusBar",
+            "position": { "x": 0, "y": 0, "width": 393, "height": 48 }
+          },
+          {
+            "type": "back_button",
+            "component": "arrow_back",
+            "position": { "x": 24, "y": 56, "width": 24, "height": 24 }
+          },
+          {
+            "type": "heading",
+            "text": "New Password",
+            "position": { "x": 24, "y": 94, "width": 345, "height": 32 },
+            "style": {
+              "font": "SF Pro Display Bold",
+              "size": "24px",
+              "line_height": "1.33",
+              "color": "#000000"
+            }
+          },
+          {
+            "type": "description",
+            "text": "Create a new password that is safe and easy to remember",
+            "position": { "x": 24, "y": 140, "width": 345, "height": 52 },
+            "style": {
+              "font": "SF Pro Text Regular",
+              "size": "16px",
+              "line_height": "1.6",
+              "color": "#555C61"
+            }
+          },
+          {
+            "type": "form",
+            "component": "signupForm",
+            "position": { "x": 24, "y": 206, "width": 345, "height": 236 },
+            "gap": "32px",
+            "fields": [
+              {
+                "type": "newPasswordField",
+                "width": 345,
+                "height": 61,
+                "icon": "shield",
+                "icon_size": "24px",
+                "label": "New Password",
+                "placeholder": "********",
+                "trailing_icon": "eye",
+                "style": {
+                  "background": "transparent",
+                  "padding": "8px 12px",
+                  "gap": "16px",
+                  "border_radius_top": "8px",
+                  "bottom_line_thickness": "1px"
+                }
+              },
+              {
+                "type": "newPasswordField",
+                "width": 345,
+                "height": 61,
+                "icon": "shield",
+                "icon_size": "24px",
+                "label": "New Password",
+                "placeholder": "********",
+                "trailing_icon": "eye",
+                "style": {
+                  "background": "transparent",
+                  "padding": "8px 12px",
+                  "gap": "16px",
+                  "border_radius_top": "8px",
+                  "bottom_line_thickness": "1px"
+                }
+              }
+            ],
+            "button": {
+              "type": "primaryButton",
+              "text": "Send Code",
+              "width": 345,
+              "height": 50,
+              "style": {
+                "background": "#00438F",
+                "border_radius": "999px",
+                "padding": "12px",
+                "text_style": {
+                  "font": "SF Pro Text Medium",
+                  "size": "16px",
+                  "line_height": "1.6",
+                  "color": "#FFFFFF"
+                }
+              }
+            }
+          },
+          {
+            "type": "home_indicator",
+            "component": "Home Indicator",
+            "position": { "x": 0, "y": 804, "width": 393, "height": 48 }
+          }
+        ]
+      },
+      {
+        "id": "51:529",
+        "name": "Reset Password 4 - Password Changed",
+        "dimensions": { "width": 393, "height": 852 },
+        "background": "#F6F9FD",
+        "border_radius": "30px",
+        "elements": [
+          {
+            "type": "status_bar",
+            "component": "IphoneStatusBar",
+            "position": { "x": 0, "y": 0, "width": 393, "height": 48 }
+          },
+          {
+            "type": "success_section",
+            "component": "accountVerifiedCol",
+            "position": { "x": 24, "y": 80, "width": 345, "height": 616 },
+            "layout": "flex flex-col, gap 24px, items-center, justify-center",
+            "elements": [
+              {
+                "type": "success_icon",
+                "component": "check",
+                "container": {
+                  "size": "150x150",
+                  "background": "#0ABDBD",
+                  "border_radius": "999px"
+                },
+                "icon": {
+                  "size": "72x72",
+                  "position": "centered",
+                  "color": "#FFFFFF"
+                }
+              },
+              {
+                "type": "verification_text",
+                "component": "verificationText",
+                "width": 345,
+                "height": 94,
+                "layout": "flex flex-col, gap 10px, items-center",
+                "elements": [
+                  {
+                    "type": "heading",
+                    "text": "Password Changed",
+                    "style": {
+                      "font": "SF Pro Display Bold",
+                      "size": "24px",
+                      "line_height": "1.33",
+                      "color": "#001C3C"
+                    }
+                  },
+                  {
+                    "type": "description",
+                    "text": "Password changed successfully, you can login with your new password.",
+                    "style": {
+                      "font": "SF Pro Text Regular",
+                      "size": "16px",
+                      "line_height": "1.6",
+                      "color": "#555C61",
+                      "alignment": "center"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "button",
+            "component": "primaryButton",
+            "text": "Login Now",
+            "position": { "x": 24, "y": 718, "width": 345, "height": 50 },
+            "style": {
+              "background": "#00438F",
+              "border_radius": "999px",
+              "padding": "12px",
+              "text_style": {
+                "font": "SF Pro Text Medium",
+                "size": "16px",
+                "line_height": "1.6",
+                "color": "#FFFFFF"
+              }
+            }
+          },
+          {
+            "type": "home_indicator",
+            "component": "Home Indicator",
+            "position": { "x": 0, "y": 800, "width": 393, "height": 52 }
+          }
+        ]
+      }
+    ],
+    "common_components": {
+      "IphoneStatusBar": {
+        "width": 375,
+        "height": 44,
+        "elements": ["Battery", "Wifi", "Cellular", "Time (11:20)"],
+        "time_style": {
+          "font": "Inter Bold",
+          "size": "14px",
+          "color": "#1D1E25",
+          "letter_spacing": "-0.28px"
+        }
+      },
+      "HomeIndicator": {
+        "width": 393,
+        "height": 52,
+        "background": "#FFFFFF",
+        "indicator": {
+          "background": "#1D1E25",
+          "border_radius": "100px",
+          "inset": "63.89% 32.27% 22.22% 32%"
+        }
+      },
+      "primaryButton": {
+        "height": 50,
+        "background": "#00438F",
+        "border_radius": "999px",
+        "padding": "12px",
+        "text_style": {
+          "font": "SF Pro Text Medium",
+          "size": "16px",
+          "line_height": "1.6",
+          "color": "#FFFFFF"
+        }
+      },
+      "emailField": {
+        "height": 61,
+        "background": "transparent",
+        "padding": "8px 12px",
+        "gap": "16px",
+        "border_radius_top": "8px",
+        "bottom_line": "1px",
+        "label_style": {
+          "font": "SF Pro Text Regular",
+          "size": "12px",
+          "line_height": "1.55",
+          "color": "#000508"
+        },
+        "input_style": {
+          "font": "SF Pro Text Regular",
+          "size": "16px",
+          "line_height": "1.6",
+          "color": "#000508"
+        }
+      },
+      "passwordField": {
+        "height": 61,
+        "background": "transparent",
+        "padding": "8px 12px",
+        "gap": "16px",
+        "border_radius_top": "8px",
+        "bottom_line": "1px",
+        "trailing_icon": "eye",
+        "label_style": {
+          "font": "SF Pro Text Regular",
+          "size": "12px",
+          "line_height": "1.55",
+          "color": "#000508"
+        },
+        "input_style": {
+          "font": "SF Pro Text Regular",
+          "size": "16px",
+          "line_height": "1.6",
+          "color": "#000508"
+        }
+      },
+      "arrow_back": {
+        "size": "24x24"
+      }
+    },
+    "design_tokens": {
+      "bg": "#F6F9FD",
+      "white": "#FFFFFF",
+      "Primary/primary-500": "#00438F",
+      "Primary/primary-900": "#001C3C",
+      "Accent/accent-500": "#0ABDBD",
+      "black/black-900": "#000508",
+      "black/black-300": "#555C61",
+      "black/black-50": "#E6E7E7",
+      "Greyscale/900": "#0D0D12",
+      "Dark": "#1D1E25",
+      "Silver": "#E9ECF2",
+      "Grey": "#808D9E",
+      "#28303F": "#28303F",
+      "Heading/H4": "Font(family: SF Pro Display, style: Bold, size: 24, weight: 700, lineHeight: 1.33)",
+      "body/bodyRegular16": "Font(family: SF Pro Text, style: Regular, size: 16, weight: 400, lineHeight: 1.6)",
+      "body/bodyMedium16": "Font(family: SF Pro Text, style: Medium, size: 16, weight: 500, lineHeight: 1.6)",
+      "body/bodyRegular14": "Font(family: SF Pro Text, style: Regular, size: 14, weight: 400, lineHeight: 1.55)",
+      "body/bodyRegular12": "Font(family: SF Pro Text, style: Regular, size: 12, weight: 400, lineHeight: 1.55)",
+      "Shadow/XSmall": "Effect(type: DROP_SHADOW, color: #0D0D120F, offset: (0, 1), radius: 2, spread: 0)"
+    },
+    "flow_summary": {
+      "step_1": "Login - Email/Password + Social Login (Google/Apple)",
+      "step_2": "Reset Password 1 - Enter email to receive code",
+      "step_3": "Reset Password 2 - Verify email with 5-digit OTP code",
+      "step_4": "Reset Password 3 - Enter new password (2 fields)",
+      "step_5": "Reset Password 4 - Success confirmation with 'Login Now' button"
+    },
+    "total_screens": 5
+  }
+}

@@ -1,0 +1,291 @@
+{
+  "source": "Figma - Doctor App Design",
+  "file_url": "https://www.figma.com/design/6dOr0j8a359z8P0QYAAyMC/doctortApp?node-id=19-136",
+  "node_id": "19:136",
+  "frame_name": "Frame 3",
+  "extracted_at": "2026-04-06",
+  "button_sets": {
+    "primaryButton": {
+      "node_id": "25:586",
+      "name": "primaryButton",
+      "dimensions": { "x": 37, "y": 32, "width": 1231, "height": 540 },
+      "props": {
+        "type": ["Primary", "Danger", "accent", "secondary"],
+        "state": ["normal", "hovered", "focused", "disabled"],
+        "showIconLeft": ["on", "off"],
+        "showIconRight": ["on", "off"],
+        "iconOnly": ["on", "off"]
+      },
+      "variations": [
+        {
+          "type": "Primary",
+          "state": "normal",
+          "variations": [
+            { "id": "25:577", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "25:587", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "25:593", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "25:630", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "25:635", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "Primary",
+          "state": "hovered",
+          "variations": [
+            { "id": "25:740", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "25:746", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "25:752", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "25:758", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "25:764", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "Primary",
+          "state": "focused",
+          "variations": [
+            { "id": "25:836", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "25:833", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "25:830", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "25:828", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "25:826", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "Primary",
+          "state": "disabled",
+          "variations": [
+            { "id": "26:45", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:49", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:52", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:55", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:57", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "Danger",
+          "state": "normal",
+          "variations": [
+            { "id": "26:145", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:196", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:193", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:191", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:189", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "Danger",
+          "state": "hovered",
+          "variations": [
+            { "id": "26:185", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:182", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:179", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:177", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:175", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "Danger",
+          "state": "focused",
+          "variations": [
+            { "id": "26:171", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:168", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:165", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:163", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:161", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "Danger",
+          "state": "disabled",
+          "variations": [
+            { "id": "26:157", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:154", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:151", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:149", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:199", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "accent",
+          "state": "normal",
+          "variations": [
+            { "id": "26:476", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:527", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:524", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:522", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:520", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "accent",
+          "state": "hovered",
+          "variations": [
+            { "id": "26:516", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:513", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:510", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:508", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:506", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "accent",
+          "state": "focused",
+          "variations": [
+            { "id": "26:502", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:499", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:496", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:494", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:492", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "accent",
+          "state": "disabled",
+          "variations": [
+            { "id": "26:488", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:485", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:482", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:480", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:474", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "secondary",
+          "state": "normal",
+          "variations": [
+            { "id": "26:626", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:677", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:674", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:672", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:670", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "secondary",
+          "state": "hovered",
+          "variations": [
+            { "id": "26:666", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:663", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:660", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:658", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:656", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "secondary",
+          "state": "focused",
+          "variations": [
+            { "id": "26:652", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:649", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:646", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:644", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:642", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        },
+        {
+          "type": "secondary",
+          "state": "disabled",
+          "variations": [
+            { "id": "26:638", "config": "showIconLeft=on, showIconRight=on, iconOnly=off", "width": 142, "height": 40 },
+            { "id": "26:635", "config": "showIconLeft=on, showIconRight=off, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:632", "config": "showIconLeft=off, showIconRight=on, iconOnly=off", "width": 110, "height": 40 },
+            { "id": "26:630", "config": "showIconLeft=off, showIconRight=off, iconOnly=off", "width": 78, "height": 40 },
+            { "id": "26:680", "config": "showIconLeft=on, showIconRight=off, iconOnly=on", "width": 40, "height": 40 }
+          ]
+        }
+      ],
+      "style_details": {
+        "border_radius": "999px (pill shape)",
+        "height": "40px",
+        "padding": "12px",
+        "icon_size": "24px",
+        "gap_between_icon_and_text": "8px",
+        "font": "SF Pro Text: Semibold",
+        "font_size": "16px",
+        "line_height": "24px",
+        "letter_spacing": "0.16px",
+        "text_color": "white",
+        "colors_by_type_and_state": {
+          "Primary": {
+            "normal": "#0D3E87",
+            "hovered": "#83a7d2",
+            "focused": "#5d7795",
+            "disabled": "#b0b4b6"
+          },
+          "Danger": {
+            "normal": "#dc3545",
+            "hovered": "#eb8a93",
+            "focused": "#dc3545",
+            "disabled": "#b0b4b6"
+          },
+          "accent": {
+            "normal": "#4DB665",
+            "hovered": "#83d28a",
+            "focused": "#5d9577",
+            "disabled": "#b0b4b6"
+          },
+          "secondary": {
+            "normal": "#5d7795",
+            "hovered": "#83a7d2",
+            "focused": "#5d7795",
+            "disabled": "#b0b4b6"
+          }
+        },
+        "focused_shadow": "0px 2px 6px 0px rgba(77,182,101,0.4)"
+      }
+    },
+    "socialButton": {
+      "node_id": "33:531",
+      "name": "Social button",
+      "dimensions": { "x": 37, "y": 609, "width": 1200, "height": 637 },
+      "props": {
+        "type": ["Google", "Apple"],
+        "iconOnly": ["True", "False"],
+        "theme": ["Color with Brand", "Brand", "Neutral"],
+        "state": ["Default", "Hover", "Focused"]
+      },
+      "variations": {
+        "Google": {
+          "iconOnly_false": {
+            "dimensions": { "width": 229, "height": 48 },
+            "themes": {
+              "Color with Brand": ["Default", "Hover", "Focused"],
+              "Brand": ["Default", "Hover", "Focused"],
+              "Neutral": ["Default", "Hover", "Focused"]
+            }
+          },
+          "iconOnly_true": {
+            "dimensions": { "width": 48, "height": 48 },
+            "themes": {
+              "Color with Brand": ["Default", "Hover", "Focused"],
+              "Brand": ["Default", "Hover", "Focused"],
+              "Neutral": ["Default", "Hover", "Focused"]
+            }
+          }
+        },
+        "Apple": {
+          "iconOnly_false": {
+            "dimensions": { "width": 229, "height": 48 },
+            "themes": {
+              "Color with Brand": ["Default", "Hover", "Focused"],
+              "Brand": ["Default", "Hover", "Focused"],
+              "Neutral": ["Default", "Hover", "Focused"]
+            }
+          },
+          "iconOnly_true": {
+            "dimensions": { "width": 48, "height": 48 },
+            "themes": {
+              "Color with Brand": ["Default", "Hover", "Focused"],
+              "Brand": ["Default", "Hover", "Focused"],
+              "Neutral": ["Default", "Hover", "Focused"]
+            }
+          }
+        }
+      }
+    }
+  },
+  "total_button_variations": {
+    "primary_buttons": 80,
+    "social_buttons": 36
+  }
+}
