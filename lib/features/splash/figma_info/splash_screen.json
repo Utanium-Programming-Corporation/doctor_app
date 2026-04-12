@@ -1,0 +1,198 @@
+{
+  "nodeId": "28:136",
+  "name": "Splash Screen",
+  "type": "FRAME",
+  "bounds": {
+    "x": -1063,
+    "y": -453,
+    "width": 393,
+    "height": 852
+  },
+  "children": [
+    {
+      "nodeId": "27:300",
+      "name": "Group 19",
+      "type": "FRAME",
+      "bounds": {
+        "x": -110,
+        "y": 484,
+        "width": 637.6256103515625,
+        "height": 561.9595947265625
+      },
+      "children": [
+        {
+          "nodeId": "27:301",
+          "name": "Rectangle 28",
+          "type": "ROUNDED_RECTANGLE",
+          "bounds": {
+            "x": 107.298095703125,
+            "y": 540.3054885864258,
+            "width": 339.4185906210241,
+            "height": 446.8776372704597
+          }
+        },
+        {
+          "nodeId": "27:302",
+          "name": "Rectangle 29",
+          "type": "VECTOR",
+          "bounds": {
+            "x": 130.68807983398438,
+            "y": 484,
+            "width": 474.1381820037441,
+            "height": 561.959600191225
+          }
+        },
+        {
+          "nodeId": "27:303",
+          "name": "Rectangle 30",
+          "type": "ROUNDED_RECTANGLE",
+          "bounds": {
+            "x": 405.505126953125,
+            "y": 540.3054885864258,
+            "width": 339.4185906210241,
+            "height": 446.8776372704597
+          }
+        },
+        {
+          "nodeId": "27:304",
+          "name": "Subtract",
+          "type": "BOOLEAN_OPERATION",
+          "bounds": {
+            "x": 284.0040588378906,
+            "y": 566.1010589599609,
+            "width": 217.82579040527344,
+            "height": 218.84786987304688
+          }
+        }
+      ]
+    },
+    {
+      "nodeId": "28:138",
+      "name": "Tibbi Clinic",
+      "type": "TEXT",
+      "bounds": {
+        "x": 72,
+        "y": 311,
+        "width": 248,
+        "height": 16
+      },
+      "textContent": {
+        "segments": [
+          {
+            "text": "Tibbi ",
+            "fontSize": 50,
+            "fontWeight": "Bold",
+            "fontFamily": "SF_Pro_Display",
+            "color": "#001C3C",
+            "lineHeight": 16
+          },
+          {
+            "text": "Clinic",
+            "fontSize": 50,
+            "fontWeight": "Bold",
+            "fontFamily": "SF_Pro_Display",
+            "color": "#00438F",
+            "lineHeight": 16
+          }
+        ]
+      }
+    },
+    {
+      "nodeId": "28:141",
+      "name": "IphoneStatusBar",
+      "type": "INSTANCE",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 393,
+        "height": 44
+      },
+      "children": [
+        {
+          "nodeId": "27:190",
+          "name": "iPhone X/Status Bars/Status Bar (Black)",
+          "type": "FRAME",
+          "children": [
+            {
+              "nodeId": "27:192",
+              "name": "Battery",
+              "type": "FRAME",
+              "bounds": {
+                "left": "3.91%",
+                "top": "39.39%",
+                "right": "10.4%",
+                "bottom": "34.85%"
+              }
+            },
+            {
+              "nodeId": "27:196",
+              "name": "Wifi",
+              "type": "FRAME",
+              "bounds": {
+                "left": "11.74%",
+                "top": "39.39%",
+                "right": "15.81%",
+                "bottom": "35.69%"
+              }
+            },
+            {
+              "nodeId": "27:200",
+              "name": "Cellular Connection",
+              "type": "FRAME",
+              "bounds": {
+                "left": "17.16%",
+                "top": "40.15%",
+                "right": "21.69%",
+                "bottom": "35.61%"
+              }
+            },
+            {
+              "nodeId": "27:205",
+              "name": "Time Style",
+              "type": "FRAME",
+              "bounds": {
+                "x": 21,
+                "y": "29.55%",
+                "width": 54,
+                "bottom": "22.73%"
+              },
+              "children": [
+                {
+                  "nodeId": "27:206",
+                  "name": "Time Text",
+                  "type": "TEXT",
+                  "textContent": {
+                    "text": "11:20",
+                    "fontSize": 14,
+                    "fontWeight": "Bold",
+                    "fontFamily": "Inter",
+                    "color": "#1D1E25",
+                    "lineHeight": 16,
+                    "textAlign": "center"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "styles": {
+    "backgroundColor": "#F6F9FD",
+    "designTokens": {
+      "Secondary/secondary-400": "#9CB9DB",
+      "Primary/primary-500": "#00438F",
+      "Accent/accent-500": "#0ABDBD",
+      "Primary/primary-900": "#001C3C",
+      "Dark": "#1D1E25",
+      "bg": "#F6F9FD"
+    }
+  },
+  "assets": {
+    "imgBattery": "http://localhost:3845/assets/85f87b75315e6697bd5f0283d8ab93eea0090f01.svg",
+    "imgWifi": "http://localhost:3845/assets/ae79e6978b494112092a2259c6a176bf5fc6b7c4.svg",
+    "imgCellularConnection": "http://localhost:3845/assets/9f3a42ba2f89d2feafe93f8fd51f422597b5e9b5.svg",
+    "imgGroup19": "http://localhost:3845/assets/bc460c25c321609781f5e5f46d55f38dbdf8d773.svg"
+  }
+}
