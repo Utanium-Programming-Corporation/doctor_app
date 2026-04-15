@@ -1,0 +1,1445 @@
+// File: lib/app.dart (474 bytes)
+import 'package:flutter/material.dart';
+
+import 'core/di/injection_container.dart';
+import 'core/router/app_router.dart';
+import 'core/theme/theme.dart';
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Doctors App',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      routerConfig: sl<AppRouter>().router,
+    );
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/config/env_config.dart (720 bytes)
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+abstract final class EnvConfig {
+  static String get supabaseUrl {
+    final value = dotenv.env['SUPABASE_URL'];
+    assert(
+      value != null && value.isNotEmpty,
+      'SUPABASE_URL is not set in .env',
+    );
+    return value!;
+  }
+
+  static String get supabaseAnonKey {
+    final value = dotenv.env['SUPABASE_ANON_KEY'];
+    assert(
+      value != null && value.isNotEmpty,
+      'SUPABASE_ANON_KEY is not set in .env',
+    );
+    return value!;
+  }
+
+  static Future<void> initSupabase() async {
+    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/di/injection_container.dart (1669 bytes)
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:get_it/get_it.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../network/network_info.dart';
+import '../router/app_router.dart';
+import '../router/auth_state.dart';
+
+final sl = GetIt.instance;
+
+/// Registers all core dependencies.
+///
+/// Call this once during app startup after Supabase has been initialized.
+///
+/// ## Per-feature registration pattern
+///
+/// Each feature module should expose its own `initX()` function:
+///
+/// ```dart
+/// // lib/features/scheduling/di/scheduling_injection.dart
+/// Future<void> initScheduling() async {
+///   // Data sources
+///   sl.registerLazySingleton<SchedulingRemoteDataSource>(
+///     () => SchedulingRemoteDataSourceImpl(sl()),
+///   );
+///   // Repositories
+///   sl.registerLazySingleton<SchedulingRepository>(
+///     () => SchedulingRepositoryImpl(
+///       remoteDataSource: sl(),
+///       networkInfo: sl(),
+///     ),
+///   );
+///   // Use cases
+///   sl.registerLazySingleton(() => GetDoctorSchedule(sl()));
+///   // Cubits
+///   sl.registerFactory(() => ScheduleCubit(sl()));
+/// }
+/// ```
+///
+/// Then call `initScheduling()` from this file or from `main.dart`.
+Future<void> initCoreDependencies() async {
+  // External
+  sl.registerLazySingleton(() => Connectivity());
+  sl.registerSingleton<SupabaseClient>(Supabase.instance.client);
+
+  // Core
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+  sl.registerLazySingleton(() => AuthStateNotifier());
+
+  // Router
+  sl.registerLazySingleton(() => AppRouter(sl<AuthStateNotifier>()));
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/error/exceptions.dart (458 bytes)
+class ServerException implements Exception {
+  final String message;
+  const ServerException(this.message);
+}
+
+class CacheException implements Exception {
+  final String message;
+  const CacheException(this.message);
+}
+
+class NetworkException implements Exception {
+  final String message;
+  const NetworkException(this.message);
+}
+
+class AuthException implements Exception {
+  final String message;
+  const AuthException(this.message);
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/error/failures.dart (535 bytes)
+import 'package:equatable/equatable.dart';
+
+abstract class Failure extends Equatable {
+  final String message;
+
+  const Failure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ServerFailure extends Failure {
+  const ServerFailure(super.message);
+}
+
+class CacheFailure extends Failure {
+  const CacheFailure(super.message);
+}
+
+class NetworkFailure extends Failure {
+  const NetworkFailure(super.message);
+}
+
+class AuthFailure extends Failure {
+  const AuthFailure(super.message);
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/network/network_info.dart (670 bytes)
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+abstract class NetworkInfo {
+  Future<bool> get isConnected;
+  Stream<bool> get connectivityStream;
+}
+
+class NetworkInfoImpl implements NetworkInfo {
+  final Connectivity _connectivity;
+
+  const NetworkInfoImpl(this._connectivity);
+
+  @override
+  Future<bool> get isConnected async {
+    final results = await _connectivity.checkConnectivity();
+    return !results.contains(ConnectivityResult.none);
+  }
+
+  @override
+  Stream<bool> get connectivityStream {
+    return _connectivity.onConnectivityChanged.map(
+      (results) => !results.contains(ConnectivityResult.none),
+    );
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/router/app_router.dart (2456 bytes)
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'auth_state.dart';
+import 'placeholder_pages.dart';
+import 'route_names.dart';
+import 'scaffold_with_nav_bar.dart';
+
+class AppRouter {
+  final AuthStateNotifier _authStateNotifier;
+
+  AppRouter(this._authStateNotifier);
+
+  late final GoRouter router = GoRouter(
+    initialLocation: '/home',
+    refreshListenable: _authStateNotifier,
+    redirect: _redirect,
+    routes: [
+      GoRoute(
+        path: '/login',
+        name: RouteNames.login,
+        builder: (context, state) => const LoginPlaceholderPage(),
+      ),
+      GoRoute(
+        path: '/access-denied',
+        name: RouteNames.accessDenied,
+        builder: (context, state) => const AccessDeniedPage(),
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ScaffoldWithNavBar(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                name: RouteNames.home,
+                builder: (context, state) => const HomePlaceholderPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                name: RouteNames.settings,
+                builder: (context, state) => const SettingsPlaceholderPage(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+
+  String? _redirect(BuildContext context, GoRouterState state) {
+    final status = _authStateNotifier.status;
+    final isOnLogin = state.matchedLocation == '/login';
+    final isOnAccessDenied = state.matchedLocation == '/access-denied';
+
+    // Auth state not yet determined — stay on current route
+    if (status == AuthStatus.unknown) {
+      return null;
+    }
+
+    // Not authenticated — go to login (unless already there)
+    if (status == AuthStatus.unauthenticated) {
+      return isOnLogin ? null : '/login';
+    }
+
+    // Authenticated but on login — go to home
+    if (isOnLogin) {
+      return '/home';
+    }
+
+    // Authenticated on access-denied — allow (they may have navigated here)
+    if (isOnAccessDenied) {
+      return null;
+    }
+
+    // All checks passed — allow navigation
+    return null;
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/router/auth_state.dart (542 bytes)
+import 'package:flutter/foundation.dart';
+
+enum AuthStatus { unknown, authenticated, unauthenticated }
+
+enum UserRole {
+  superAdmin,
+  clinicAdmin,
+  doctor,
+  nurse,
+  receptionist,
+  pharmacist,
+  patient,
+}
+
+class AuthStateNotifier extends ChangeNotifier {
+  AuthStatus _status = AuthStatus.unknown;
+  UserRole? _role;
+
+  AuthStatus get status => _status;
+  UserRole? get role => _role;
+
+  void setAuth(AuthStatus status, [UserRole? role]) {
+    _status = status;
+    _role = role;
+    notifyListeners();
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/router/placeholder_pages.dart (1003 bytes)
+import 'package:flutter/material.dart';
+
+class LoginPlaceholderPage extends StatelessWidget {
+  const LoginPlaceholderPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: Text('Login — Placeholder')));
+  }
+}
+
+class AccessDeniedPage extends StatelessWidget {
+  const AccessDeniedPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: Text('Access Denied')));
+  }
+}
+
+class HomePlaceholderPage extends StatelessWidget {
+  const HomePlaceholderPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: Text('Home — Placeholder')));
+  }
+}
+
+class SettingsPlaceholderPage extends StatelessWidget {
+  const SettingsPlaceholderPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: Text('Settings — Placeholder')));
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/router/route_names.dart (264 bytes)
+abstract final class RouteNames {
+  static const String login = 'login';
+  static const String accessDenied = 'accessDenied';
+  static const String dashboard = 'dashboard';
+  static const String home = 'home';
+  static const String settings = 'settings';
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/router/scaffold_with_nav_bar.dart (1077 bytes)
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class ScaffoldWithNavBar extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
+
+  const ScaffoldWithNavBar({super.key, required this.navigationShell});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) {
+          navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
+          );
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/app_colors.dart (6807 bytes)
+import 'package:flutter/material.dart';
+
+/// Design-system color palette extracted from Figma.
+/// Light-mode only.
+abstract final class AppColors {
+  // ── Primary ──────────────────────────────────────────────────────────
+  static const Color primary50 = Color(0xFFE6ECF4);
+  static const Color primary100 = Color(0xFFB0C5DC);
+  static const Color primary200 = Color(0xFF8AA9CB);
+  static const Color primary300 = Color(0xFF5481B4);
+  static const Color primary400 = Color(0xFF3369A5);
+  static const Color primary500 = Color(0xFF00438F);
+  static const Color primary600 = Color(0xFF003D82);
+  static const Color primary700 = Color(0xFF003066);
+  static const Color primary800 = Color(0xFF00254F);
+  static const Color primary900 = Color(0xFF001C3C);
+
+  static const MaterialColor primarySwatch = MaterialColor(0xFF00438F, {
+    50: primary50,
+    100: primary100,
+    200: primary200,
+    300: primary300,
+    400: primary400,
+    500: primary500,
+    600: primary600,
+    700: primary700,
+    800: primary800,
+    900: primary900,
+  });
+
+  // ── Secondary ────────────────────────────────────────────────────────
+  static const Color secondary50 = Color(0xFFF3F6FB);
+  static const Color secondary100 = Color(0xFFD9E4F1);
+  static const Color secondary200 = Color(0xFFC6D7EA);
+  static const Color secondary300 = Color(0xFFACC4E1);
+  static const Color secondary400 = Color(0xFF9CB9DB);
+  static const Color secondary500 = Color(0xFF83A7D2);
+  static const Color secondary600 = Color(0xFF7798BF);
+  static const Color secondary700 = Color(0xFF5D7795);
+  static const Color secondary800 = Color(0xFF485C74);
+  static const Color secondary900 = Color(0xFF374658);
+
+  // ── Accent ───────────────────────────────────────────────────────────
+  static const Color accent50 = Color(0xFFE7F8F8);
+  static const Color accent100 = Color(0xFFB3EBEB);
+  static const Color accent200 = Color(0xFF8EE1E1);
+  static const Color accent300 = Color(0xFF5BD3D3);
+  static const Color accent400 = Color(0xFF3BCACA);
+  static const Color accent500 = Color(0xFF0ABDBD);
+  static const Color accent600 = Color(0xFF09ACAC);
+  static const Color accent700 = Color(0xFF078686);
+  static const Color accent800 = Color(0xFF066868);
+  static const Color accent900 = Color(0xFF044F4F);
+
+  // ── Success ──────────────────────────────────────────────────────────
+  static const Color success50 = Color(0xFFEAF6EC);
+  static const Color success75 = Color(0xFFA7DBB3);
+  static const Color success100 = Color(0xFF82CC93);
+  static const Color success200 = Color(0xFF4DB665);
+  static const Color success300 = Color(0xFF28A745);
+  static const Color success400 = Color(0xFF1C7530);
+  static const Color success500 = Color(0xFF18662A);
+
+  // ── Warning ──────────────────────────────────────────────────────────
+  static const Color warning50 = Color(0xFFFFF9E6);
+  static const Color warning75 = Color(0xFFFFE699);
+  static const Color warning100 = Color(0xFFFFDB6F);
+  static const Color warning200 = Color(0xFFFFCC31);
+  static const Color warning300 = Color(0xFFFFC107);
+  static const Color warning400 = Color(0xFFB38705);
+  static const Color warning500 = Color(0xFF9C7604);
+
+  // ── Info ─────────────────────────────────────────────────────────────
+  static const Color info50 = Color(0xFFE8F6F8);
+  static const Color info75 = Color(0xFFA0D9E2);
+  static const Color info100 = Color(0xFF78C9D6);
+  static const Color info200 = Color(0xFF3EB2C4);
+  static const Color info300 = Color(0xFF17A2B8);
+  static const Color info400 = Color(0xFF107181);
+  static const Color info500 = Color(0xFF0E6370);
+
+  // ── Danger ───────────────────────────────────────────────────────────
+  static const Color danger50 = Color(0xFFFCEBEC);
+  static const Color danger75 = Color(0xFFF1ACB3);
+  static const Color danger100 = Color(0xFFEB8A93);
+  static const Color danger200 = Color(0xFFE25765);
+  static const Color danger300 = Color(0xFFDC3545);
+  static const Color danger400 = Color(0xFF9A2530);
+  static const Color danger500 = Color(0xFF86202A);
+
+  // ── Neutral (Black) ─────────────────────────────────────────────────
+  static const Color black50 = Color(0xFFE6E7E7);
+  static const Color black100 = Color(0xFFB0B4B6);
+  static const Color black200 = Color(0xFF8A8F92);
+  static const Color black300 = Color(0xFF555C61);
+  static const Color black400 = Color(0xFF343D42);
+  static const Color black500 = Color(0xFF010C13);
+  static const Color black600 = Color(0xFF010B11);
+  static const Color black700 = Color(0xFF01090D);
+  static const Color black800 = Color(0xFF01070A);
+  static const Color black900 = Color(0xFF000508);
+
+  // ── Surface / Background ────────────────────────────────────────────
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color scaffoldBackground = Color(0xFFFFFFFF);
+  static const Color cardBackground = Color(0xFFFFFFFF);
+  static const Color divider = Color(0xFFE2E8F0);
+
+  // ── Button colors (from Figma) ──────────────────────────────────────
+  static const Color buttonPrimary = Color(0xFF0D3E87);
+  static const Color buttonPrimaryHovered = Color(0xFF83A7D2);
+  static const Color buttonPrimaryFocused = Color(0xFF5D7795);
+  static const Color buttonDisabled = Color(0xFFB0B4B6);
+
+  static const Color buttonDanger = Color(0xFFDC3545);
+  static const Color buttonDangerHovered = Color(0xFFEB8A93);
+
+  static const Color buttonAccent = Color(0xFF4DB665);
+  static const Color buttonAccentHovered = Color(0xFF83D28A);
+
+  static const Color buttonSecondary = Color(0xFF5D7795);
+  static const Color buttonSecondaryHovered = Color(0xFF83A7D2);
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/app_shadows.dart (2308 bytes)
+import 'package:flutter/material.dart';
+
+/// Elevation / shadow tokens extracted from the Figma design system.
+abstract final class AppShadows {
+  /// XSmall — subtle elevation for inputs, chips.
+  static const List<BoxShadow> xs = [
+    BoxShadow(
+      offset: Offset(0, 1),
+      blurRadius: 2,
+      color: Color.fromRGBO(13, 13, 18, 0.06),
+    ),
+  ];
+
+  /// Small — cards at rest.
+  static const List<BoxShadow> sm = [
+    BoxShadow(
+      offset: Offset(0, 1),
+      blurRadius: 3,
+      color: Color.fromRGBO(13, 13, 18, 0.05),
+    ),
+    BoxShadow(
+      offset: Offset(0, 1),
+      blurRadius: 2,
+      color: Color.fromRGBO(13, 13, 18, 0.04),
+    ),
+  ];
+
+  /// Medium — raised cards, navbar.
+  static const List<BoxShadow> md = [
+    BoxShadow(
+      offset: Offset(0, 5),
+      blurRadius: 10,
+      spreadRadius: -2,
+      color: Color.fromRGBO(13, 13, 18, 0.04),
+    ),
+    BoxShadow(
+      offset: Offset(0, 4),
+      blurRadius: 8,
+      spreadRadius: -1,
+      color: Color.fromRGBO(13, 13, 18, 0.02),
+    ),
+  ];
+
+  /// Large — modals, dropdowns.
+  static const List<BoxShadow> lg = [
+    BoxShadow(
+      offset: Offset(0, 12),
+      blurRadius: 16,
+      spreadRadius: -4,
+      color: Color.fromRGBO(13, 13, 18, 0.08),
+    ),
+    BoxShadow(
+      offset: Offset(0, 4),
+      blurRadius: 6,
+      spreadRadius: -2,
+      color: Color.fromRGBO(13, 13, 18, 0.03),
+    ),
+  ];
+
+  /// XLarge — dialogs, floating action panels.
+  static const List<BoxShadow> xl = [
+    BoxShadow(
+      offset: Offset(0, 24),
+      blurRadius: 48,
+      spreadRadius: -12,
+      color: Color.fromRGBO(13, 13, 18, 0.18),
+    ),
+  ];
+
+  /// XXLarge — full-screen overlays.
+  static const List<BoxShadow> xxl = [
+    BoxShadow(
+      offset: Offset(0, 24),
+      blurRadius: 48,
+      spreadRadius: -12,
+      color: Color.fromRGBO(13, 13, 18, 0.18),
+    ),
+  ];
+
+  /// Navbar upward shadow (from Figma navbar_light).
+  static const List<BoxShadow> navBar = [
+    BoxShadow(
+      offset: Offset(0, -5),
+      blurRadius: 10,
+      color: Color.fromRGBO(13, 13, 18, 0.04),
+    ),
+    BoxShadow(
+      offset: Offset(0, -4),
+      blurRadius: 8,
+      color: Color.fromRGBO(13, 13, 18, 0.02),
+    ),
+  ];
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/app_theme.dart (5041 bytes)
+import 'package:flutter/material.dart';
+
+import 'app_colors.dart';
+import 'app_typography.dart';
+import 'components/app_bar_theme.dart';
+import 'components/button_theme.dart';
+import 'components/card_theme.dart';
+import 'components/chip_theme.dart';
+import 'components/dialog_theme.dart';
+import 'components/divider_theme.dart';
+import 'components/feedback_theme.dart';
+import 'components/input_theme.dart';
+import 'components/navigation_theme.dart';
+import 'components/selection_theme.dart';
+
+/// Assembles the app-wide [ThemeData] for light mode.
+///
+/// Usage:
+/// ```dart
+/// MaterialApp(
+///   theme: AppTheme.light,
+/// )
+/// ```
+abstract final class AppTheme {
+  static ThemeData get light {
+    final colorScheme = ColorScheme(
+      brightness: Brightness.light,
+      primary: AppColors.primary500,
+      onPrimary: AppColors.white,
+      primaryContainer: AppColors.primary50,
+      onPrimaryContainer: AppColors.primary900,
+      secondary: AppColors.secondary500,
+      onSecondary: AppColors.white,
+      secondaryContainer: AppColors.secondary50,
+      onSecondaryContainer: AppColors.secondary900,
+      tertiary: AppColors.accent500,
+      onTertiary: AppColors.white,
+      tertiaryContainer: AppColors.accent50,
+      onTertiaryContainer: AppColors.accent900,
+      error: AppColors.danger300,
+      onError: AppColors.white,
+      errorContainer: AppColors.danger50,
+      onErrorContainer: AppColors.danger500,
+      surface: AppColors.white,
+      onSurface: AppColors.black900,
+      onSurfaceVariant: AppColors.black300,
+      outline: AppColors.black200,
+      outlineVariant: AppColors.black50,
+      shadow: const Color(0xFF0D0D12),
+      scrim: const Color(0xFF0D0D12),
+      inverseSurface: AppColors.black500,
+      onInverseSurface: AppColors.white,
+      inversePrimary: AppColors.primary200,
+      surfaceContainerHighest: AppColors.black50,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: AppColors.scaffoldBackground,
+      dividerColor: AppColors.divider,
+
+      // ── Typography ────────────────────────────────────────────────────
+      textTheme: _textTheme(colorScheme),
+
+      // ── Components ────────────────────────────────────────────────────
+      appBarTheme: AppBarStyles.theme,
+      elevatedButtonTheme: ButtonStyles.elevatedButton,
+      filledButtonTheme: ButtonStyles.filledButton,
+      outlinedButtonTheme: ButtonStyles.outlinedButton,
+      textButtonTheme: ButtonStyles.textButton,
+      iconButtonTheme: ButtonStyles.iconButton,
+      floatingActionButtonTheme: ButtonStyles.fab,
+      inputDecorationTheme: InputStyles.theme,
+      cardTheme: CardStyles.theme,
+      bottomNavigationBarTheme: NavigationStyles.bottomNavigationBar,
+      navigationBarTheme: NavigationStyles.navigationBar,
+      tabBarTheme: NavigationStyles.tabBar,
+      chipTheme: ChipStyles.theme,
+      dividerTheme: DividerStyles.theme,
+      dialogTheme: DialogStyles.dialog,
+      bottomSheetTheme: DialogStyles.bottomSheet,
+      snackBarTheme: FeedbackStyles.snackBar,
+      tooltipTheme: FeedbackStyles.tooltip,
+      progressIndicatorTheme: FeedbackStyles.progressIndicator,
+      checkboxTheme: SelectionStyles.checkbox,
+      switchTheme: SelectionStyles.switchTheme,
+      radioTheme: SelectionStyles.radio,
+    );
+  }
+
+  // ── Private helpers ──────────────────────────────────────────────────
+
+  static TextTheme _textTheme(ColorScheme cs) {
+    return TextTheme(
+      displayLarge: AppTypography.h1.copyWith(color: cs.onSurface),
+      displayMedium: AppTypography.h2.copyWith(color: cs.onSurface),
+      displaySmall: AppTypography.h3.copyWith(color: cs.onSurface),
+      headlineLarge: AppTypography.h3.copyWith(color: cs.onSurface),
+      headlineMedium: AppTypography.h4.copyWith(color: cs.onSurface),
+      headlineSmall: AppTypography.h5.copyWith(color: cs.onSurface),
+      titleLarge: AppTypography.h5.copyWith(color: cs.onSurface),
+      titleMedium: AppTypography.bodyBold16.copyWith(color: cs.onSurface),
+      titleSmall: AppTypography.bodyBold14.copyWith(color: cs.onSurface),
+      bodyLarge: AppTypography.bodyRegular18.copyWith(color: cs.onSurface),
+      bodyMedium: AppTypography.bodyRegular16.copyWith(color: cs.onSurface),
+      bodySmall: AppTypography.bodyRegular14.copyWith(color: cs.onSurface),
+      labelLarge: AppTypography.button.copyWith(color: cs.onSurface),
+      labelMedium: AppTypography.bodyMedium12.copyWith(color: cs.onSurface),
+      labelSmall: AppTypography.bodyRegular12.copyWith(color: cs.onSurface),
+    );
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/app_typography.dart (5523 bytes)
+import 'package:flutter/material.dart';
+
+/// Typography tokens extracted from the Figma design system.
+///
+/// Font families:
+///   - SF Pro Display → headings (H1–H4)
+///   - SF Pro Text    → headings (H5–H6), body, labels
+///
+/// On Android / web the closest system fallback is used automatically.
+/// To ship the exact fonts, add them to `assets/fonts/` and register
+/// in `pubspec.yaml`, then update [_fontDisplay] / [_fontText].
+abstract final class AppTypography {
+  static const String _fontDisplay = 'SF Pro Display';
+  static const String _fontText = 'SF Pro Text';
+
+  // ── Headings ─────────────────────────────────────────────────────────
+
+  static const TextStyle h1 = TextStyle(
+    fontFamily: _fontDisplay,
+    fontWeight: FontWeight.w700,
+    fontSize: 48,
+    height: 1.2, // 57.6 px
+    letterSpacing: -2,
+  );
+
+  static const TextStyle h2 = TextStyle(
+    fontFamily: _fontDisplay,
+    fontWeight: FontWeight.w700,
+    fontSize: 40,
+    height: 1.2, // 48 px
+    letterSpacing: -2,
+  );
+
+  static const TextStyle h3 = TextStyle(
+    fontFamily: _fontDisplay,
+    fontWeight: FontWeight.w700,
+    fontSize: 32,
+    height: 1.4, // 44.8 px
+    letterSpacing: -2,
+  );
+
+  static const TextStyle h4 = TextStyle(
+    fontFamily: _fontDisplay,
+    fontWeight: FontWeight.w700,
+    fontSize: 24,
+    height: 1.33, // 32 px
+    letterSpacing: 0,
+  );
+
+  static const TextStyle h5 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+    height: 1.4, // 28 px
+    letterSpacing: 0,
+  );
+
+  static const TextStyle h6 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w700,
+    fontSize: 18,
+    height: 1.4, // 25.2 px
+    letterSpacing: 0,
+  );
+
+  // ── Body Large (18 px) ──────────────────────────────────────────────
+
+  static const TextStyle bodyBold18 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w700,
+    fontSize: 18,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyMedium18 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w500,
+    fontSize: 18,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyRegular18 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w400,
+    fontSize: 18,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  // ── Body Medium (16 px) ─────────────────────────────────────────────
+
+  static const TextStyle bodyBold16 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w700,
+    fontSize: 16,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyMedium16 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+    height: 1.6,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyRegular16 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w400,
+    fontSize: 16,
+    height: 1.6,
+    letterSpacing: 0,
+  );
+
+  // ── Body Small (14 px) ──────────────────────────────────────────────
+
+  static const TextStyle bodyBold14 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w700,
+    fontSize: 14,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyMedium14 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyRegular14 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  // ── Body XSmall (12 px) ─────────────────────────────────────────────
+
+  static const TextStyle bodyBold12 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w700,
+    fontSize: 12,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyMedium12 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  static const TextStyle bodyRegular12 = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+
+  // ── Button ──────────────────────────────────────────────────────────
+
+  static const TextStyle button = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w600,
+    fontSize: 16,
+    height: 1.5, // 24 px
+    letterSpacing: 0.16,
+  );
+
+  // ── Label / Caption ─────────────────────────────────────────────────
+
+  static const TextStyle label = TextStyle(
+    fontFamily: _fontText,
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+    height: 1.55,
+    letterSpacing: 0,
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/app_bar_theme.dart (570 bytes)
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../app_colors.dart';
+import '../app_typography.dart';
+
+abstract final class AppBarStyles {
+  static AppBarTheme get theme => AppBarTheme(
+    centerTitle: true,
+    elevation: 0,
+    scrolledUnderElevation: 1,
+    backgroundColor: AppColors.white,
+    foregroundColor: AppColors.black900,
+    surfaceTintColor: Colors.transparent,
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
+    titleTextStyle: AppTypography.h6.copyWith(color: AppColors.black900),
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/button_theme.dart (2557 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+import '../app_typography.dart';
+
+abstract final class ButtonStyles {
+  static ElevatedButtonThemeData get elevatedButton => ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.buttonPrimary,
+      foregroundColor: AppColors.white,
+      disabledBackgroundColor: AppColors.buttonDisabled,
+      disabledForegroundColor: AppColors.white,
+      elevation: 0,
+      textStyle: AppTypography.button,
+      minimumSize: const Size(78, 40),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      shape: const StadiumBorder(),
+    ),
+  );
+
+  static FilledButtonThemeData get filledButton => FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      backgroundColor: AppColors.buttonPrimary,
+      foregroundColor: AppColors.white,
+      disabledBackgroundColor: AppColors.buttonDisabled,
+      disabledForegroundColor: AppColors.white,
+      textStyle: AppTypography.button,
+      minimumSize: const Size(78, 40),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      shape: const StadiumBorder(),
+    ),
+  );
+
+  static OutlinedButtonThemeData get outlinedButton => OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      foregroundColor: AppColors.buttonSecondary,
+      disabledForegroundColor: AppColors.buttonDisabled,
+      textStyle: AppTypography.button,
+      minimumSize: const Size(78, 40),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      shape: const StadiumBorder(),
+      side: const BorderSide(color: AppColors.buttonSecondary),
+    ),
+  );
+
+  static TextButtonThemeData get textButton => TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: AppColors.primary500,
+      disabledForegroundColor: AppColors.buttonDisabled,
+      textStyle: AppTypography.button,
+      minimumSize: const Size(78, 40),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      shape: const StadiumBorder(),
+    ),
+  );
+
+  static IconButtonThemeData get iconButton => IconButtonThemeData(
+    style: IconButton.styleFrom(
+      foregroundColor: AppColors.black300,
+      minimumSize: const Size(40, 40),
+      iconSize: 24,
+    ),
+  );
+
+  static FloatingActionButtonThemeData get fab => FloatingActionButtonThemeData(
+    backgroundColor: AppColors.primary500,
+    foregroundColor: AppColors.white,
+    elevation: 4,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/card_theme.dart (378 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+
+abstract final class CardStyles {
+  static CardThemeData get theme => CardThemeData(
+    elevation: 0,
+    color: AppColors.cardBackground,
+    surfaceTintColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    margin: EdgeInsets.zero,
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/chip_theme.dart (541 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+import '../app_typography.dart';
+
+abstract final class ChipStyles {
+  static ChipThemeData get theme => ChipThemeData(
+    backgroundColor: AppColors.black50,
+    disabledColor: AppColors.black50,
+    selectedColor: AppColors.primary50,
+    labelStyle: AppTypography.bodyMedium14.copyWith(color: AppColors.black900),
+    side: BorderSide.none,
+    shape: const StadiumBorder(),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/dialog_theme.dart (864 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+import '../app_typography.dart';
+
+abstract final class DialogStyles {
+  static DialogThemeData get dialog => DialogThemeData(
+    backgroundColor: AppColors.white,
+    surfaceTintColor: Colors.transparent,
+    elevation: 8,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    titleTextStyle: AppTypography.h5.copyWith(color: AppColors.black900),
+    contentTextStyle: AppTypography.bodyRegular16.copyWith(
+      color: AppColors.black300,
+    ),
+  );
+
+  static const BottomSheetThemeData bottomSheet = BottomSheetThemeData(
+    backgroundColor: AppColors.white,
+    surfaceTintColor: Colors.transparent,
+    elevation: 8,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    ),
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/divider_theme.dart (246 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+
+abstract final class DividerStyles {
+  static const DividerThemeData theme = DividerThemeData(
+    color: AppColors.divider,
+    thickness: 1,
+    space: 1,
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/feedback_theme.dart (994 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+import '../app_typography.dart';
+
+abstract final class FeedbackStyles {
+  static SnackBarThemeData get snackBar => SnackBarThemeData(
+    backgroundColor: AppColors.black500,
+    contentTextStyle: AppTypography.bodyRegular14.copyWith(
+      color: AppColors.white,
+    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    behavior: SnackBarBehavior.floating,
+  );
+
+  static TooltipThemeData get tooltip => TooltipThemeData(
+    textStyle: AppTypography.bodyRegular12.copyWith(color: AppColors.white),
+    decoration: BoxDecoration(
+      color: AppColors.black500,
+      borderRadius: BorderRadius.circular(8),
+    ),
+  );
+
+  static const ProgressIndicatorThemeData progressIndicator =
+      ProgressIndicatorThemeData(
+        color: AppColors.primary500,
+        linearTrackColor: AppColors.primary50,
+        circularTrackColor: AppColors.primary50,
+      );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/input_theme.dart (1908 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+import '../app_typography.dart';
+
+abstract final class InputStyles {
+  static InputDecorationTheme get theme => InputDecorationTheme(
+    filled: false,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    enabledBorder: const UnderlineInputBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      borderSide: BorderSide(color: AppColors.black200, width: 1),
+    ),
+    focusedBorder: const UnderlineInputBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      borderSide: BorderSide(color: AppColors.primary500, width: 2),
+    ),
+    errorBorder: const UnderlineInputBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      borderSide: BorderSide(color: AppColors.danger300, width: 2),
+    ),
+    focusedErrorBorder: const UnderlineInputBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      borderSide: BorderSide(color: AppColors.danger300, width: 2),
+    ),
+    disabledBorder: const UnderlineInputBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      borderSide: BorderSide(color: AppColors.black200, width: 1),
+    ),
+    labelStyle: AppTypography.label.copyWith(color: AppColors.black900),
+    floatingLabelStyle: AppTypography.label.copyWith(
+      color: AppColors.primary500,
+    ),
+    hintStyle: AppTypography.bodyRegular16.copyWith(color: AppColors.black200),
+    errorStyle: AppTypography.bodyRegular12.copyWith(
+      color: AppColors.danger300,
+    ),
+    helperStyle: AppTypography.bodyRegular12.copyWith(
+      color: AppColors.black300,
+    ),
+    helperMaxLines: 2,
+    errorMaxLines: 2,
+    iconColor: AppColors.black300,
+    prefixIconColor: AppColors.black300,
+    suffixIconColor: AppColors.black300,
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/navigation_theme.dart (1828 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+import '../app_typography.dart';
+
+abstract final class NavigationStyles {
+  static BottomNavigationBarThemeData get bottomNavigationBar =>
+      BottomNavigationBarThemeData(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.primary500,
+        unselectedItemColor: AppColors.black200,
+        selectedLabelStyle: AppTypography.bodyMedium12,
+        unselectedLabelStyle: AppTypography.bodyRegular12,
+        showUnselectedLabels: true,
+      );
+
+  static NavigationBarThemeData get navigationBar => NavigationBarThemeData(
+    backgroundColor: AppColors.white,
+    surfaceTintColor: Colors.transparent,
+    elevation: 0,
+    height: 60,
+    indicatorColor: AppColors.primary50,
+    labelTextStyle: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return AppTypography.bodyMedium12.copyWith(color: AppColors.primary500);
+      }
+      return AppTypography.bodyRegular12.copyWith(color: AppColors.black200);
+    }),
+    iconTheme: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return const IconThemeData(color: AppColors.primary500, size: 24);
+      }
+      return const IconThemeData(color: AppColors.black200, size: 24);
+    }),
+  );
+
+  static TabBarThemeData get tabBar => TabBarThemeData(
+    labelColor: AppColors.primary500,
+    unselectedLabelColor: AppColors.black300,
+    labelStyle: AppTypography.bodyBold14,
+    unselectedLabelStyle: AppTypography.bodyRegular14,
+    indicatorColor: AppColors.primary500,
+    indicatorSize: TabBarIndicatorSize.label,
+    dividerColor: AppColors.divider,
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/components/selection_theme.dart (1509 bytes)
+import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+
+abstract final class SelectionStyles {
+  static CheckboxThemeData get checkbox => CheckboxThemeData(
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return AppColors.primary500;
+      }
+      return Colors.transparent;
+    }),
+    checkColor: WidgetStateProperty.all(AppColors.white),
+    side: const BorderSide(color: AppColors.black200, width: 1.5),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+  );
+
+  static SwitchThemeData get switchTheme => SwitchThemeData(
+    thumbColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) return AppColors.white;
+      return AppColors.black200;
+    }),
+    trackColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return AppColors.primary500;
+      }
+      return AppColors.black50;
+    }),
+    trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.transparent;
+      }
+      return AppColors.black100;
+    }),
+  );
+
+  static RadioThemeData get radio => RadioThemeData(
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return AppColors.primary500;
+      }
+      return AppColors.black200;
+    }),
+  );
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/theme/theme.dart (518 bytes)
+export 'app_colors.dart';
+export 'app_shadows.dart';
+export 'app_theme.dart';
+export 'app_typography.dart';
+export 'components/app_bar_theme.dart';
+export 'components/button_theme.dart';
+export 'components/card_theme.dart';
+export 'components/chip_theme.dart';
+export 'components/dialog_theme.dart';
+export 'components/divider_theme.dart';
+export 'components/feedback_theme.dart';
+export 'components/input_theme.dart';
+export 'components/navigation_theme.dart';
+export 'components/selection_theme.dart';
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/usecase/usecase.dart (296 bytes)
+import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
+
+import '../error/failures.dart';
+
+abstract class UseCase<T, Params> {
+  Future<Either<Failure, T>> call(Params params);
+}
+
+class NoParams extends Equatable {
+  @override
+  List<Object> get props => [];
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/core/utils/app_logger.dart (789 bytes)
+import 'dart:developer' as developer;
+
+import 'package:flutter/foundation.dart';
+
+abstract final class AppLogger {
+  static void error(String message, {Object? error, StackTrace? stackTrace}) {
+    developer.log(message, name: 'ERROR', error: error, stackTrace: stackTrace);
+  }
+
+  static void warning(String message, {Object? error, StackTrace? stackTrace}) {
+    if (!kReleaseMode) {
+      developer.log(
+        message,
+        name: 'WARNING',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  static void info(String message) {
+    if (!kReleaseMode) {
+      developer.log(message, name: 'INFO');
+    }
+  }
+
+  static void debug(String message) {
+    if (kDebugMode) {
+      developer.log(message, name: 'DEBUG');
+    }
+  }
+}
+
+
+//------------------------------------------------------------------------------
+
+// File: lib/main.dart (898 bytes)
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'app.dart';
+import 'core/config/env_config.dart';
+import 'core/di/injection_container.dart';
+import 'core/utils/app_logger.dart';
+
+void main() {
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await dotenv.load(fileName: '.env');
+      await EnvConfig.initSupabase();
+      await initCoreDependencies();
+
+      FlutterError.onError = (details) {
+        AppLogger.error(
+          details.exceptionAsString(),
+          error: details.exception,
+          stackTrace: details.stack,
+        );
+      };
+
+      runApp(const App());
+    },
+    (error, stackTrace) {
+      AppLogger.error(
+        'Uncaught zone error',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    },
+  );
+}
+
+
+//------------------------------------------------------------------------------
+

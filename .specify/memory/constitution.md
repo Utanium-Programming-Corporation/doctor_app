@@ -1,22 +1,36 @@
 <!--
   SYNC IMPACT REPORT
   ==================
-  Version change: N/A → 1.0.0 (initial ratification)
-  Modified principles: N/A (all new)
+  Version change: 1.0.0 → 1.1.0
+  Bump rationale: MINOR — new principles added (VII, VIII),
+    auth method materially changed in Principle VI,
+    use case interface contracts added to Principle I.
+  Modified principles:
+    - I. Clean Architecture — added use case interface contract
+      rules (four abstract interfaces replacing base UseCase class,
+      NoParams sentinel eliminated)
+    - VI. Supabase-First Backend — "email/password + phone OTP"
+      replaced with "Google Sign-In and Apple Sign-In only"
   Added sections:
-    - Core Principles (6 principles)
-    - Technology Stack & Constraints
-    - Development Workflow & Quality Gates
-    - Governance
-  Removed sections: N/A
+    - VII. UI File Size Discipline (NON-NEGOTIABLE)
+    - VIII. Unified Text Input
+  Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md — ✅ compatible (Constitution
-      Check section will be populated per these principles)
-    - .specify/templates/spec-template.md — ✅ compatible (requirements
-      and success criteria align with principle-driven gates)
+      Check section dynamically references principles)
+    - .specify/templates/spec-template.md — ✅ compatible (no
+      hardcoded principle references)
     - .specify/templates/tasks-template.md — ✅ compatible (phase
-      structure supports feature-modular delivery)
+      structure is project-agnostic)
   Follow-up TODOs: None
+  Migration notes:
+    - Existing code using base UseCase / NoParams MUST be refactored
+      to one of the four new interfaces.
+    - Existing email/password or phone OTP auth code MUST be removed
+      and replaced with Google/Apple Sign-In flows.
+    - Any UI file exceeding 100 lines MUST be decomposed.
+    - Any direct TextField/TextFormField usage MUST be replaced with
+      AppFormField helpers.
 -->
 
 # Doctors App Constitution
@@ -42,8 +56,27 @@ router, di, utils, constants, localization). No feature folder may
 import from another feature folder directly — shared logic MUST be
 extracted to `core/` or a shared domain contract.
 
+**Use Case Interface Contracts**: The base `UseCase` class is
+eliminated. Every use case MUST implement exactly one of these four
+abstract interfaces:
+
+| Interface | Signature |
+|-----------|-----------|
+| `UseCaseWithParams<T, Params>` | `FutureResult<T> call(Params params)` |
+| `UseCaseWithoutParams<T>` | `FutureResult<T> call()` |
+| `StreamUseCaseWithParams<T, Params>` | `StreamResult<T> call(Params params)` |
+| `StreamUseCaseWithoutParams<T>` | `StreamResult<T> call()` |
+
+Where:
+- `FutureResult<T>` = `Future<Either<Failure, T>>`
+- `StreamResult<T>` = `Stream<Either<Failure, T>>`
+
+The `NoParams` sentinel class is eliminated. Use cases that take no
+parameters MUST use the `*WithoutParams` variant instead.
+
 **Rationale**: Enforces testability, replaceability, and prevents
-spaghetti coupling across a 23-feature codebase.
+spaghetti coupling across a 23-feature codebase. Typed use case
+interfaces eliminate the ambiguous base class and sentinel anti-pattern.
 
 ### II. Type-Safe Functional Error Handling
 
@@ -109,8 +142,12 @@ over-engineering.
 
 ### VI. Supabase-First Backend
 
-- Supabase Auth MUST be the sole authentication provider (email/password
-  + phone OTP).
+- Supabase Auth MUST be the sole authentication provider. The only
+  supported sign-in methods are **Google Sign-In** and
+  **Apple Sign-In**. Email/password and phone OTP authentication are
+  prohibited. On mobile platforms, native sign-in SDKs
+  (`google_sign_in`, `sign_in_with_apple`) MUST be used. On web,
+  Supabase OAuth redirect flow is the fallback.
 - Business logic that involves data integrity (stock adjustment on
   invoice, waitlist promotion on cancellation, audit logging) MUST be
   implemented as Postgres functions and triggers, not in client code.
@@ -125,7 +162,36 @@ over-engineering.
 
 **Rationale**: Centralizing logic at the database and edge layer
 ensures consistency across all clients and eliminates client-side
-trust assumptions.
+trust assumptions. Social sign-in eliminates password management
+burden and reduces credential-related attack surface.
+
+### VII. UI File Size Discipline (NON-NEGOTIABLE)
+
+- Every presentation-layer UI file (pages, widgets) MUST NOT exceed
+  **100 lines of code**.
+- If a page or widget exceeds 100 lines, it MUST be decomposed into
+  smaller private widgets in a local `widgets/` subfolder within the
+  same feature's presentation directory.
+- **Exceptions**: Cubit/Bloc files and state files have no line limit.
+  Only files that define pages or widgets are subject to this rule.
+
+**Rationale**: Small, focused widget files improve readability,
+reduce merge conflicts, and enforce single-responsibility at the
+presentation layer across 23 feature areas.
+
+### VIII. Unified Text Input
+
+- All text input fields across the entire app MUST use the
+  `AppFormField` widget through the `buildTextField()` and
+  `buildTextFieldClearable()` static helpers.
+- Direct use of `TextField` or `TextFormField` outside of
+  `AppFormField` is prohibited.
+- All input validation MUST use composable validators from
+  `AppValidators`. Inline validation logic is prohibited.
+
+**Rationale**: A single text input component ensures consistent
+styling, validation behavior, accessibility, and RTL support across
+all features without per-field reimplementation.
 
 ## Technology Stack & Constraints
 
@@ -135,6 +201,8 @@ trust assumptions.
 - **Routing**: go_router with auth/role guards
 - **Error Handling**: dartz (Either), equatable
 - **Code Generation**: freezed + json_serializable
+- **Authentication**: google_sign_in, sign_in_with_apple (native SDKs);
+  Supabase OAuth redirect (web fallback)
 - **Backend**: Supabase (Auth, Database, Realtime, Storage,
   Edge Functions, pg_cron)
 - **Offline**: Read-only cache (Hive or Isar) for today's schedule
@@ -154,10 +222,12 @@ trust assumptions.
 
 - **Architecture Gate**: Every new feature MUST pass a Constitution
   Check (verifying Clean Architecture layers, RLS presence, audit
-  logging) before implementation begins.
+  logging, use case interface compliance, UI file size limits, and
+  AppFormField usage) before implementation begins.
 - **Code Review**: All PRs MUST verify compliance with these
   principles. Reviewers MUST check for PHI leaks, missing RLS
-  policies, and cross-feature import violations.
+  policies, cross-feature import violations, UI files exceeding
+  100 lines, and direct TextField/TextFormField usage.
 - **Testing Strategy**:
   - Domain layer: unit tests for every use case (mocktail + bloc_test)
   - Data layer: unit tests for repository implementations with mocked
@@ -191,9 +261,9 @@ this constitution prevails.
   and typo fixes.
 - **Compliance Review**: Every feature specification and implementation
   plan MUST include a Constitution Check section verifying alignment
-  with all six core principles.
+  with all eight core principles.
 - **Enforcement**: Violations discovered in review MUST be resolved
   before merge. No exceptions without a documented governance waiver
   approved and recorded in the PR description.
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-07 | **Last Amended**: 2026-04-07
+**Version**: 1.1.0 | **Ratified**: 2026-04-07 | **Last Amended**: 2026-04-12

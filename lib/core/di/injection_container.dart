@@ -2,9 +2,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/auth/di/auth_injection.dart';
+import '../../features/clinic/di/clinic_injection.dart';
+import '../../features/patient/di/patient_injection.dart';
+import '../../features/queue/di/queue_injection.dart';
+import '../../features/scheduling/di/scheduling_injection.dart';
 import '../network/network_info.dart';
 import '../router/app_router.dart';
-import '../router/auth_state.dart';
 
 final sl = GetIt.instance;
 
@@ -45,8 +49,17 @@ Future<void> initCoreDependencies() async {
 
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
-  sl.registerLazySingleton(() => AuthStateNotifier());
 
-  // Router
-  sl.registerLazySingleton(() => AppRouter(sl<AuthStateNotifier>()));
+  // Features
+  await initAuth();
+  await initClinic();
+  await initPatient();
+  await initScheduling();
+  await initQueue();
+
+  // Router (must be registered after initAuth + initClinic — depends on AuthCubit, ClinicCubit)
+  sl.registerLazySingleton(
+    () => AppRouter(sl(), sl(), sl(), sl()),
+  );
 }
+
