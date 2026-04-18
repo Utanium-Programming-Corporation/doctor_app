@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
 
+import '../../../../core/config/env_config.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/user_profile.dart';
 import '../models/user_profile_model.dart';
@@ -22,10 +28,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl(this._supabase);
 
+  static String _generateRawNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(
+      length,
+      (_) => charset[random.nextInt(charset.length)],
+    ).join();
+  }
+
+  static String _sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    return sha256.convert(bytes).toString();
+  }
+
   @override
   Future<User> signInWithGoogle() async {
     debugPrint('[GoogleSignIn] Starting sign-in flow');
     try {
+      final rawNonce = _generateRawNonce();
+      final hashedNonce = _sha256ofString(rawNonce);
+      debugPrint('[GoogleSignIn] Re-initializing GoogleSignIn with nonce');
+      await GoogleSignIn.instance.initialize(
+        clientId: Platform.isIOS ? EnvConfig.googleIosClientId : null,
+        serverClientId: EnvConfig.googleWebClientId,
+        nonce: hashedNonce,
+      );
       debugPrint('[GoogleSignIn] Launching GoogleSignIn.authenticate()');
       final googleUser = await GoogleSignIn.instance.authenticate();
       debugPrint('[GoogleSignIn] Got googleUser: ${googleUser.email}');
@@ -39,6 +68,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
+        nonce: rawNonce,
       );
       if (response.user == null) {
         debugPrint('[GoogleSignIn] ERROR: Supabase returned no user');
@@ -68,11 +98,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<User> signInWithApple() async {
     try {
+      final rawNonce = _generateRawNonce();
+      final hashedNonce = _sha256ofString(rawNonce);
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        nonce: hashedNonce,
       );
       final idToken = credential.identityToken;
       if (idToken == null) {
@@ -81,6 +114,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.apple,
         idToken: idToken,
+        nonce: rawNonce,
       );
       if (response.user == null) {
         throw const AuthException('Supabase sign-in returned no user');
