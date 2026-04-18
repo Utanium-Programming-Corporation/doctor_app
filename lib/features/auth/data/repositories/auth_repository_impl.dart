@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
 import '../../../../core/error/exceptions.dart';
@@ -21,12 +22,17 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, User>> signInWithGoogle() async {
+    debugPrint('[AuthRepo] signInWithGoogle called');
     if (!await _networkInfo.isConnected) {
+      debugPrint('[AuthRepo] No internet connection');
       return const Left(NetworkFailure('No internet connection'));
     }
     try {
-      return Right(await _remoteDataSource.signInWithGoogle());
+      final user = await _remoteDataSource.signInWithGoogle();
+      debugPrint('[AuthRepo] signInWithGoogle succeeded: ${user.id}');
+      return Right(user);
     } on AuthException catch (e) {
+      debugPrint('[AuthRepo] signInWithGoogle AuthException: ${e.message}');
       return Left(AuthFailure(e.message));
     }
   }

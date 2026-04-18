@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
@@ -85,11 +86,17 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signInWithGoogle() async {
+    debugPrint('[AuthCubit] signInWithGoogle called');
     emit(const AuthLoading());
     final result = await _signInWithGoogle();
     result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (_) {}, // auth stream subscription handles the state transition
+      (failure) {
+        debugPrint('[AuthCubit] signInWithGoogle failure: ${failure.message}');
+        emit(AuthError(failure.message));
+      },
+      (_) {
+        debugPrint('[AuthCubit] signInWithGoogle succeeded, awaiting auth stream');
+      }, // auth stream subscription handles the state transition
     );
   }
 

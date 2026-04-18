@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
@@ -23,30 +24,43 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<User> signInWithGoogle() async {
+    debugPrint('[GoogleSignIn] Starting sign-in flow');
     try {
-      final googleUser = await GoogleSignIn(
-        serverClientId: '944114861921-lahfm2auqd9astlcrgll9v1c2qugui0e.apps.googleusercontent.com',
-      ).signIn();
-      if (googleUser == null) {
-        throw const AuthException('Google sign-in was cancelled');
-      }
-      final googleAuth = await googleUser.authentication;
-      final idToken = googleAuth.idToken;
+      debugPrint('[GoogleSignIn] Launching GoogleSignIn.authenticate()');
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      debugPrint('[GoogleSignIn] Got googleUser: ${googleUser.email}');
+      final idToken = googleUser.authentication.idToken;
+      debugPrint('[GoogleSignIn] idToken present: ${idToken != null}');
       if (idToken == null) {
+        debugPrint('[GoogleSignIn] ERROR: idToken is null');
         throw const AuthException('Failed to obtain Google ID token');
       }
+      debugPrint('[GoogleSignIn] Calling Supabase signInWithIdToken');
       final response = await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
-        accessToken: googleAuth.accessToken,
       );
       if (response.user == null) {
+        debugPrint('[GoogleSignIn] ERROR: Supabase returned no user');
         throw const AuthException('Supabase sign-in returned no user');
       }
+      debugPrint(
+        '[GoogleSignIn] Success — Supabase user: ${response.user!.id}',
+      );
       return response.user!;
     } on AuthException {
       rethrow;
-    } catch (e) {
+    } on GoogleSignInException catch (e) {
+      debugPrint('[GoogleSignIn] GoogleSignInException: ${e.description} , $e');
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        debugPrint('[GoogleSignIn] Sign-in cancelled by user');
+        throw const AuthException('Google sign-in was cancelled');
+      }
+      debugPrint('[GoogleSignIn] GoogleSignInException: ${e.description}');
+      throw AuthException(e.description ?? e.toString());
+    } catch (e, st) {
+      debugPrint('[GoogleSignIn] CAUGHT EXCEPTION: $e');
+      debugPrint('[GoogleSignIn] Stack trace: $st');
       throw AuthException(e.toString());
     }
   }
@@ -130,8 +144,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Stream<User?> onAuthStateChange() {
-    return _supabase.auth.onAuthStateChange.map(
-      (event) => event.session?.user,
-    );
+    return _supabase.auth.onAuthStateChange.map((event) => event.session?.user);
   }
 }
