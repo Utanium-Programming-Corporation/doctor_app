@@ -29,7 +29,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       debugPrint('[GoogleSignIn] Launching GoogleSignIn.authenticate()');
       final googleUser = await GoogleSignIn.instance.authenticate();
       debugPrint('[GoogleSignIn] Got googleUser: ${googleUser.email}');
-      final idToken = googleUser.authentication.idToken;
+      final googleAuth = googleUser.authentication;
+      final idToken = googleAuth.idToken;
       debugPrint('[GoogleSignIn] idToken present: ${idToken != null}');
       if (idToken == null) {
         debugPrint('[GoogleSignIn] ERROR: idToken is null');

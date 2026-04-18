@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -52,9 +53,12 @@ Future<void> initCoreDependencies() async {
   sl.registerSingleton<SupabaseClient>(Supabase.instance.client);
 
   // Initialize Google Sign-In (must be called once before authenticate())
+  final serverClientId = EnvConfig.googleWebClientId;
+  final clientId = Platform.isIOS ? EnvConfig.googleIosClientId : null;
+  debugPrint('[GoogleSignIn] Initializing with serverClientId=$serverClientId, clientId=$clientId');
   await GoogleSignIn.instance.initialize(
-    clientId: Platform.isIOS ? EnvConfig.googleIosClientId : null,
-    serverClientId: EnvConfig.googleWebClientId,
+    clientId: clientId,
+    serverClientId: serverClientId,
   );
 
   // Core
